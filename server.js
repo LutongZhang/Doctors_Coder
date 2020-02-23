@@ -1,0 +1,37 @@
+const express = require('express');
+const config = require('./server/config/config')
+const mongoose = require('mongoose');
+const app = express();
+const Router = express.Router();
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+
+
+var port = process.env.PORT || 5000;
+console.log(config.db.uri)
+mongoose.connect(config.db.uri, { useNewUrlParser: true })
+//check db connection
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function () {
+    console.log("database connect")
+});
+
+
+
+app.use(cookieParser());
+app.use(bodyParser.json());
+app.use(function (req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header(
+        'Access-Control-Allow-Headers',
+        'Origin, X-Requested-With, Content-Type, Accept'
+    );
+    next();
+});
+
+
+
+app.listen(port, function () {
+    console.log('Node app starts at port ', port);
+});
