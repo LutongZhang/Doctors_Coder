@@ -1,7 +1,9 @@
 import React, { Component, useState, useEffect } from "react";
 import { Form, Row, Col, Button } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import { register } from "../../redux/user.redux";
 
-let Register = props => {
+const Register = props => {
   const [userForm, setusreForm] = useState({
     userName: "",
     firstName: "",
@@ -11,15 +13,35 @@ let Register = props => {
     confirmPassword: ""
   });
 
+  const dispatch = useDispatch();
+
+  const handleSubmit = event => {
+    event.preventDefault();
+    dispatch(register(userForm));
+  };
+  const handleChange = event => {
+    const target = event.target;
+    const value = target.type === "checkbox" ? target.checked : target.value;
+    const name = target.name;
+    setusreForm({
+      ...userForm,
+      [name]: value
+    });
+
+    console.log(userForm);
+  };
+
   return (
     <div>
-      <Form>
+      <Form onSubmit={handleSubmit}>
         <Form.Group as={Col} controlId="userName">
           <Form.Label>UserName</Form.Label>
           <Form.Control
             name="userName"
             type="text"
             placeholder="Enter UserName"
+            value={userForm.userName}
+            onChange={handleChange}
           />
         </Form.Group>
         <Form.Group as={Col} controlId="firstName">
@@ -28,6 +50,8 @@ let Register = props => {
             type="text"
             name="firstName"
             placeholder="Enter First Name"
+            value={userForm.firstName}
+            onChange={handleChange}
           />
         </Form.Group>
         <Form.Group as={Col} controlId="lastName">
@@ -36,19 +60,39 @@ let Register = props => {
             type="text"
             name="lastName"
             placeholder="Enter Last Name"
+            value={userForm.lastName}
+            onChange={handleChange}
           />
         </Form.Group>
         <Form.Group as={Col} controlId="email">
           <Form.Label>Email</Form.Label>
-          <Form.Control type="email" name="email" placeholder="Enter email" />
+          <Form.Control
+            type="email"
+            name="email"
+            placeholder="Enter email"
+            value={userForm.email}
+            onChange={handleChange}
+          />
         </Form.Group>
         <Form.Group as={Col} controlId="password">
           <Form.Label>Password</Form.Label>
-          <Form.Control type="password" placeholder="Password" />
+          <Form.Control
+            name="password"
+            type="password"
+            placeholder="Password"
+            value={userForm.password}
+            onChange={handleChange}
+          />
         </Form.Group>
-        <Form.Group as={Col} controlId="password">
+        <Form.Group as={Col} controlId="confirmPassword">
           <Form.Label>Confirm Password</Form.Label>
-          <Form.Control type="password" placeholder="Password" />
+          <Form.Control
+            type="password"
+            name="confirmPassword"
+            placeholder="Password"
+            value={userForm.confirmPassword}
+            onChange={handleChange}
+          />
         </Form.Group>
 
         <Button variant="primary" type="submit">
