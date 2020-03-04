@@ -41,7 +41,7 @@ export const register = input => {
 
   return dispatch => {
     return axios
-      .post("api/user/Register", input)
+      .post("http://localhost:5000/api/user/Register", input)
       .then(res => {
         if (res.data.code === 1) {
           dispatch(authSuccess(res.data.data));
