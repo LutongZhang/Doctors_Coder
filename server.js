@@ -5,6 +5,7 @@ const app = express();
 const userRouter = require("./server/api/user-api");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const passport = require("passport");
 
 var port = process.env.PORT || 5000;
 mongoose.connect(config.db.uri, { useNewUrlParser: true });
@@ -25,6 +26,11 @@ app.use(function(req, res, next) {
   );
   next();
 });
+
+//Passport middleware
+app.use(passport.initialize());
+//Passport config
+require("./server/config/passport")(passport);
 
 //Router
 app.use("/api/user", userRouter);
