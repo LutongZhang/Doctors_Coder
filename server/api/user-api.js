@@ -36,13 +36,15 @@ Router.post("/register", (req, res) => {
       newUser
         .save()
         .then(Userxx => {
-          res.json(Userxx);
+          res.json({ userName: Userxx.userName });
         })
         .catch(err => {
           console.log("err", err);
           let msg = "registration fail";
+          //Object.getOwnPropertyNames(err.keyValue)[0];
           if (err.code === 11000) {
-            msg = "username or Email alreadly existed";
+            msg =
+              Object.getOwnPropertyNames(err.keyValue)[0] + " alreadly existed";
           }
           return res.status(400).json(msg);
         });
