@@ -42,7 +42,7 @@ export const register = input => {
 
   return dispatch => {
     return axios
-      .post("http://localhost:5000/api/user/register", input)
+      .post("api/user/register", input)
       .then(res => {
         console.log(res.data);
         dispatch(authSuccess(res.data.data));
