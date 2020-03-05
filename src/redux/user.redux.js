@@ -1,4 +1,5 @@
 import axios from "axios";
+import msg from "../message";
 
 //action
 const AUTH_SUCCESS = "AUTH_SUCCESS";
@@ -45,10 +46,14 @@ export const register = input => {
       .then(res => {
         if (res.data.code === 1) {
           dispatch(authSuccess(res.data.data));
+        } else {
+          console.log("Registration err", res);
+
+          msg.alert("danger", res.data.msg);
         }
       })
       .catch(err => {
-        console.log("log in err", err);
+        console.log("Registration err", err);
       });
   };
 };
