@@ -8,58 +8,52 @@ const config = require("../config/config");
 const User = require("../models/user-model");
 
 //Input validation
-const validateRegisterInput = require("../config/register_validation");
-const validateLoginInput = require("../config/login_validation");
+const validateRegisterInput = require("../userValidation/register_validation");
+const validateLoginInput = require("../userValidation/login_validation");
 
 const Router = express.Router();
 mongoose.connect(config.db.uri);
 
-Router.post("/Register", (req, res) => {
+Router.post("/register", (req, res) => {
   const { errors, isValid } = validateRegisterInput(req.body);
   if (!isValid) {
-    return res.status(400).json(errors);
+    return res.status(400).json("Registration failed");
   }
-  User.findOne({ userName: req.body.userName }).then(Userx => {
-    if (Userx) {
-      return res.status(400).json({ userName: "Username already exists" });
-    }
-    else {
-      User.findOne({ email: req.body.email }).then(Userxx => {
-        if (Userxx) {
-          return res.status(400).json({ email: "Email already exists" });
-        }
-        else {
-          const newUser = new User({
-            userName: req.body.userName,
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            email: req.body.email,
-            password: req.body.password
-          });
+  const newUser = new User({
+    userName: req.body.userName,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    email: req.body.email,
+    password: req.body.password
+  });
 
-          //Hash password
-          bcrypt.genSalt(10, (err, salt) => {
-            bcrypt.hash(newUser.password, salt, (err, hash) => {
-              if (err) throw err;
-              newUser.password = hash;
-              newUser
-                .save()
-                .then(Userxx => res.json(Userxx))
-                .catch(err => console.log(err));
-            });
-          });
-        }
-      });
-    }
+  //Hash password
+  bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.hash(newUser.password, salt, (err, hash) => {
+      if (err) throw err;
+      newUser.password = hash;
+      newUser
+        .save()
+        .then(Userxx => {
+          res.json(Userxx);
+        })
+        .catch(err => {
+          console.log("err", err);
+          let msg = "registration fail";
+          if (err.code === 11000) {
+            msg = "username or Email alreadly existed";
+          }
+          return res.status(400).json(msg);
+        });
+    });
   });
 });
 
-
-Router.post("/Login", (req, res) => {
+Router.post("/login", (req, res) => {
   const { errors, isValid } = validateLoginInput(req.body);
 
-  if(!isValid) {
-    return res.status(400).json(errors);
+  if (!isValid) {
+    return res.status(400).json("please fill required data");
   }
 
   const userName = req.body.userName;
@@ -67,16 +61,16 @@ Router.post("/Login", (req, res) => {
 
   //find user by username
   User.findOne({ userName }).then(User => {
-    if(!User){
-      return res.status(404).json({ usernamenotfound: "Username not found"});
+    if (!User) {
+      return res.status(401).json("Username not found");
     }
 
     bcrypt.compare(password, User.password).then(isMatch => {
-      if(isMatch){
+      if (isMatch) {
         const payload = {
           id: User.id,
           name: User.userName
-        }
+        };
 
         jwt.sign(
           payload,
@@ -85,16 +79,14 @@ Router.post("/Login", (req, res) => {
             expiresIn: 31556926
           },
           (err, token) => {
+            res.cookie("Bearer", token);
             res.json({
-              success: true,
-              token: "Bearer " + token
+              userName: User.userName
             });
           }
         );
       } else {
-          return res 
-            .status(400)
-            .json({ passwordincorrect: "Password incorrect" }); 
+        return res.status(400).json("Password incorrect");
       }
     });
   });

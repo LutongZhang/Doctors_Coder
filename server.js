@@ -30,7 +30,7 @@ app.use(function(req, res, next) {
 //Passport middleware
 app.use(passport.initialize());
 //Passport config
-require("./server/config/passport")(passport);
+require("./server/userValidation/passport")(passport);
 
 //Router
 app.use("/api/user", userRouter);

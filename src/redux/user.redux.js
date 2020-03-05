@@ -42,18 +42,14 @@ export const register = input => {
 
   return dispatch => {
     return axios
-      .post("http://localhost:5000/api/user/Register", input)
+      .post("http://localhost:5000/api/user/register", input)
       .then(res => {
-        if (res.data.code === 1) {
-          dispatch(authSuccess(res.data.data));
-        } else {
-          console.log("Registration err", res);
-
-          msg.alert("danger", res.data.msg);
-        }
+        console.log(res.data);
+        dispatch(authSuccess(res.data.data));
       })
       .catch(err => {
-        console.log("Registration err", err);
+        console.log("Registration err:", err.response.data);
+        msg.alert("danger", err.response.data);
       });
   };
 };

@@ -27,8 +27,6 @@ const Register = props => {
       ...userForm,
       [name]: value
     });
-
-    console.log(userForm);
   };
 
   return (
