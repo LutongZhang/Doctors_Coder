@@ -3,7 +3,7 @@ const User = require("../models/user-model");
 
 const Router = express.Router();
 
-Router.post("/Register", (req, res) => {
+Router.post("/register", (req, res) => {
   const userInfo = req.body;
   const user = new User({
     userName: userInfo.userName,

@@ -42,7 +42,7 @@ export const register = input => {
 
   return dispatch => {
     return axios
-      .post("api/user/Register", input)
+      .post("api/user/register", input)
       .then(res => {
         if (res.data.code === 1) {
           dispatch(authSuccess(res.data.data));
