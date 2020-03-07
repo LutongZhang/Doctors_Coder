@@ -4,6 +4,7 @@ const User = require("../models/user-model");
 const Router = express.Router();
 
 Router.post("/register", (req, res) => {
+  console.log("register post");
   const userInfo = req.body;
   const user = new User({
     userName: userInfo.userName,
