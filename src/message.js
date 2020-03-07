@@ -33,6 +33,7 @@ class msg {
   }
 
   createLoading = () => {
+    this.loadingDiv = document.createElement("div");
     const loading = (
       <Spinner
         animation="border"
@@ -51,18 +52,24 @@ class msg {
   };
 
   killLoading = () => {
-    this.loadingDiv.removeChild();
+    if (this.loadingDiv.childNodes.length !== 0) {
+      this.loadingDiv.removeChild(this.loadingDiv.childNodes[0]);
+    }
   };
 }
 
 const message = new msg();
 
-axios.interceptors.request.use(() => {
-  message.createLoading();
-});
+// axios.interceptors.request.use(config => {
+//   console.log("create");
+//   message.createLoading();
+//   return config;
+// });
 
-axios.interceptors.response.use(() => {
-  message.killLoading();
-});
+// axios.interceptors.response.use(config => {
+//   console.log("kill");
+//   message.killLoading();
+//   return config;
+// });
 
 export default message;

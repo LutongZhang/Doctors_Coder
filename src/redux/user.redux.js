@@ -41,19 +41,21 @@ export const register = input => {
   }
 
   return dispatch => {
+    //loading start
+    msg.createLoading();
     return axios
       .post("api/user/register", input)
       .then(res => {
-        if (res.data.code === 1) {
-          dispatch(authSuccess(res.data.data));
-        } else {
-          console.log("Registration err", res);
-
-          msg.alert("danger", res.data.msg);
-        }
+        console.log(res.data);
+        dispatch(authSuccess(res.data.data));
+        //loading kill
+        msg.killLoading();
       })
       .catch(err => {
-        console.log("Registration err", err);
+        console.log("Registration err:", err);
+        msg.alert("danger", err.response.data);
+        //loading kill
+        msg.killLoading();
       });
   };
 };
