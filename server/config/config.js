@@ -1,10 +1,12 @@
 const db = {
-    uri: "mongodb+srv://mwollenhaup:CENPASSWORD@cluster0-8be66.mongodb.net/test?retryWrites=true&w=majority"
-}
+  uri:
+    "mongodb+srv://mwollenhaup:CENPASSWORD@cluster0-8be66.mongodb.net/test?retryWrites=true&w=majority"
+};
 //node -e "console.log(require('crypto').randomBytes(32).toString('hex'));"
 const config = {
-    db: db,
-    secretOrKey: "921f7105fefbd33f99a76fea38790c8e40f9ae0b078c7ad7fc3a9880a75cb6a0"
-}
+  db: db,
+  secretOrKey:
+    "921f7105fefbd33f99a76fea38790c8e40f9ae0b078c7ad7fc3a9880a75cb6a0"
+};
 
-module.exports = config
+module.exports = config;

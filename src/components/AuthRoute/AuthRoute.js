@@ -5,6 +5,10 @@ import Search from "../Search/Search";
 import { Switch, Route } from "react-router-dom";
 import { connect } from "react-redux";
 import Navbar from "../Navbar/Navbar";
+import { withRouter } from "react-router";
+import { getInfo } from "../../redux/user.redux";
+import { authSuccess } from "../../redux/user.redux";
+import axios from "axios";
 
 const Home = () => {
   return <div>HomePage</div>;
@@ -46,8 +50,29 @@ class AuthRoute extends Component {
     super(props);
   }
 
+  componentDidMount() {
+    axios
+      .get("api/user/info")
+      .then(res => {
+        this.props.history.push("/search");
+        console.log(res.data);
+        this.props.dispatch(authSuccess(res.data));
+      })
+      .catch(e => {
+        if (this.props.isAuth === false) {
+          const limitedPath = ["/login", "/register"];
+          if (
+            limitedPath.indexOf(this.props.history.location.pathname) === -1
+          ) {
+            this.props.history.push("/login");
+          }
+        }
+      });
+  }
+
   render() {
-    console.log(this.props);
+    const isAuth = this.props.isAuth;
+    console.log(isAuth);
     const navList = [
       {
         name: "Home",
@@ -61,21 +86,21 @@ class AuthRoute extends Component {
         path: "/search",
         type: "main",
         component: Search,
-        hide: false
+        hide: !isAuth
       },
       {
         name: "Login",
         type: "user",
         path: "/login",
         component: Login,
-        hide: false
+        hide: isAuth
       },
       {
         name: "Register",
         type: "user",
         path: "/register",
         component: Register,
-        hide: false
+        hide: isAuth
       }
     ];
     return (
@@ -89,4 +114,4 @@ class AuthRoute extends Component {
 
 const mapStateToProps = state => state.user;
 
-export default connect(mapStateToProps, null)(AuthRoute);
+export default withRouter(connect(mapStateToProps)(AuthRoute));
