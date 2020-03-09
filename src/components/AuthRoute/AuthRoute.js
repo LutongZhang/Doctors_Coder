@@ -6,7 +6,6 @@ import { Switch, Route } from "react-router-dom";
 import { connect } from "react-redux";
 import Navbar from "../Navbar/Navbar";
 import { withRouter } from "react-router";
-import { getInfo } from "../../redux/user.redux";
 import { authSuccess } from "../../redux/user.redux";
 import axios from "axios";
 

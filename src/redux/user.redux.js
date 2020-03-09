@@ -39,15 +39,21 @@ export const login = input => {
   }
   console.log(input);
   return dispatch => {
+    //loading start
+    msg.createLoading();
     return axios
       .post("/api/user/login", input)
       .then(res => {
         console.log(res.data);
         dispatch(authSuccess(res.data));
+        //loading kill
+        msg.killLoading();
       })
       .catch(err => {
         msg.alert("danger", err.response.data);
         console.log(err.response.data);
+        //loading kill
+        msg.killLoading();
       });
   };
 };
