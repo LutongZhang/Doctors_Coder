@@ -21,23 +21,35 @@ const Search = props => {
   const [show, setShow] = useState({ InfoModal: false, addModal: false });
   const [chosen, setChosen] = useState({ keywords: [] });
   const [devices, setDevices] = useState([
-    { name: "a", keywords: ["doctor", "surgeon"] },
-    { name: "a", keywords: ["doctor", "surgeon"] },
-    { name: "a", keywords: ["doctor", "surgeon"] },
-    { name: "a", keywords: ["doctor", "surgeon"] },
-    { name: "a", keywords: ["doctor", "surgeon"] },
-    { name: "a", keywords: ["doctor", "surgeon"] },
-    { name: "a", keywords: ["doctor", "surgeon"] },
-    { name: "a", keywords: ["doctor", "surgeon"] },
-    { name: "a", keywords: ["doctor", "surgeon"] },
-    { name: "a", keywords: ["doctor", "surgeon"] },
-    { name: "a", keywords: ["doctor", "surgeon"] },
-    { name: "a", keywords: ["doctor", "surgeon"] }
+    { name: "Syringe", keywords: ["syringe", "needle", "sharp"], source: "https://upload.wikimedia.org/wikipedia/commons/1/1d/Syringe2.jpg"},
+	{ name: "Thermometer", keywords: ["thermometer", "temperature", "fever"], source: "https://upload.wikimedia.org/wikipedia/commons/1/17/Kwikthermometers.jpg"},
+	{ name: "Stethoscope", keywords: ["stethoscope", "ears", "listen", "chest"], source: "https://upload.wikimedia.org/wikipedia/commons/7/75/Stethoscope_1.jpg"},
+    { name: "Syringe", keywords: ["syringe", "needle", "sharp"], source: "https://upload.wikimedia.org/wikipedia/commons/1/1d/Syringe2.jpg"},
+	{ name: "Thermometer", keywords: ["thermometer", "temperature", "fever"], source: "https://upload.wikimedia.org/wikipedia/commons/1/17/Kwikthermometers.jpg"},
+	{ name: "Stethoscope", keywords: ["stethoscope", "ears", "listen", "chest"], source: "https://upload.wikimedia.org/wikipedia/commons/7/75/Stethoscope_1.jpg"}
   ]);
+
 
   const handleChange = e => {
     setKeyWords(e.target.value);
   };
+
+// filters total device list to only include items searched for
+  const filtered = devices.filter(device => {
+	  var found = false;
+	  device.keywords.forEach(word => {
+		  if (word.toLowerCase().includes(keyWords)) {
+			  found = true;
+		  }
+	  });
+	  return found;
+  });
+// sorts the filtered list in alphabetical order based on name
+  filtered.sort(function(device1, device2) {
+	  if (device1.name.toLowerCase() < device2.name.toLowerCase()) {return -1;}
+	  if (device1.name.toLowerCase() > device2.name.toLowerCase()) {return 1;}
+	  return 0;
+  });
 
   return (
     <div>
@@ -75,16 +87,17 @@ const Search = props => {
       <br></br>
       <br></br>
       <br></br>
+
       <Container>
         <CardColumns>
-          {devices.map((val, index) => {
+          {filtered.map((val, index) => {
             return (
               <Card
                 style={{ width: "80%" }}
                 key={index}
                 className="text-center"
               >
-                <Card.Img variant="top" src="holder.js/100px180" />
+                <Card.Img variant="top" src={val.source} />
                 <Card.Body>
                   <Card.Title>{val.name}</Card.Title>
                 </Card.Body>
