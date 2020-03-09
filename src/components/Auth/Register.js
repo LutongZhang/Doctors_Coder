@@ -2,8 +2,11 @@ import React, { Component, useState, useEffect } from "react";
 import { Form, Row, Col, Button } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { register } from "../../redux/user.redux";
+import { Redirect } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Register = props => {
+  const isAuth = useSelector(state => state.user.isAuth);
   const [userForm, setusreForm] = useState({
     userName: "",
     firstName: "",
@@ -31,6 +34,13 @@ const Register = props => {
 
   return (
     <div>
+      {isAuth ? (
+        <Redirect
+          to={{
+            pathname: "/search"
+          }}
+        ></Redirect>
+      ) : null}
       <Form onSubmit={handleSubmit}>
         <Form.Group as={Col} controlId="userName">
           <Form.Label>UserName</Form.Label>
