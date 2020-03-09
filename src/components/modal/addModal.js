@@ -55,6 +55,7 @@ const AddModal = props => {
           <Button onClick={addInput} variant="warning">
             enter more keyword
           </Button>
+
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>

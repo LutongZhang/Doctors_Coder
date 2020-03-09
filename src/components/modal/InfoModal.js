@@ -17,9 +17,6 @@ const InfoModal = props => {
           <Button variant="secondary" onClick={props.handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={props.handleClose}>
-            Save Changes
-          </Button>
         </Modal.Footer>
       </Modal>
     </>

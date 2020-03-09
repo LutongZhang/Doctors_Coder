@@ -91,6 +91,7 @@ const Search = props => {
                 <Card.Footer>
                   <Button
                     variant="outline-info"
+                    style={{ marginRight: "40%" }}
                     onClick={() => {
                       setChosen(val);
                       setShow({ ...show, InfoModal: true });
