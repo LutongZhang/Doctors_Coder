@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("../config/config");
-
+var sendEmail = require("./emailFunctionality.js");
 //User model
 const User = require("../models/user-model");
 
@@ -15,11 +15,14 @@ const Router = express.Router();
 mongoose.connect(config.db.uri);
 
 Router.post("/register", (req, res) => {
+
   const { errors, isValid } = validateRegisterInput(req.body);
   console.log(errors);
   if (!isValid) {
     return res.status(400).json("registration failed");
   }
+  sendEmail(req.body);
+
   const newUser = new User({
     userName: req.body.userName,
     firstName: req.body.firstName,
