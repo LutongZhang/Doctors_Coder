@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("../config/config");
-
+var sendEmail = require("../mailer/emailFunctionality.js");
 //User model
 const User = require("../models/user-model");
 
@@ -20,6 +20,7 @@ Router.post("/register", (req, res) => {
   if (!isValid) {
     return res.status(400).json("registration failed");
   }
+
   const newUser = new User({
     userName: req.body.userName,
     firstName: req.body.firstName,
@@ -37,6 +38,7 @@ Router.post("/register", (req, res) => {
         .save()
         .then(Userxx => {
           res.json({ userName: Userxx.userName });
+          sendEmail(req.body);
         })
         .catch(err => {
           console.log("err", err);
@@ -53,8 +55,9 @@ Router.post("/register", (req, res) => {
 });
 
 Router.post("/login", (req, res) => {
+  console.log(req.body);
   const { errors, isValid } = validateLoginInput(req.body);
-
+  console.log("login budy:", req.body);
   if (!isValid) {
     return res.status(400).json("please fill required data");
   }

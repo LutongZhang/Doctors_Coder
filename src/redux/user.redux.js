@@ -32,7 +32,25 @@ const authSuccess = userInfo => {
 
 //open function
 
-const login = input => {};
+export const login = input => {
+  if (!input) {
+    console.log("login input not exist");
+    return;
+  }
+  console.log(input);
+  return dispatch => {
+    return axios
+      .post("/api/user/login", input)
+      .then(res => {
+        console.log(res.data);
+        dispatch(authSuccess(res.data));
+      })
+      .catch(err => {
+        msg.alert("danger", err.response.data);
+        console.log(err.response.data);
+      });
+  };
+};
 
 export const register = input => {
   if (!input) {
@@ -41,15 +59,21 @@ export const register = input => {
   }
 
   return dispatch => {
+    //loading start
+    msg.createLoading();
     return axios
       .post("api/user/register", input)
       .then(res => {
         console.log(res.data);
-        dispatch(authSuccess(res.data.data));
+        dispatch(authSuccess(res.data));
+        //loading kill
+        msg.killLoading();
       })
       .catch(err => {
-        console.log("Registration err:", err.response.data);
+        console.log("Registration err:", err);
         msg.alert("danger", err.response.data);
+        //loading kill
+        msg.killLoading();
       });
   };
 };
