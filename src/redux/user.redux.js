@@ -77,12 +77,3 @@ export const register = input => {
       });
   };
 };
-
-export const getInfo = () => {
-  return dispatch => {
-    return axios.get("api/user/info").then(res => {
-      console.log(res.data);
-      dispatch(authSuccess(res.data));
-    });
-  };
-};
