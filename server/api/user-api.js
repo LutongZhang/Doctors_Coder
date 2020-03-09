@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("../config/config");
-var sendEmail = require("./emailFunctionality.js");
+var sendEmail = require("../mailer/emailFunctionality.js");
 //User model
 const User = require("../models/user-model");
 

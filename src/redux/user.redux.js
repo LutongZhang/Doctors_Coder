@@ -46,6 +46,7 @@ export const login = input => {
         dispatch(authSuccess(res.data));
       })
       .catch(err => {
+        msg.alert("danger", err.response.data);
         console.log(err.response.data);
       });
   };
