@@ -39,10 +39,15 @@ export const login = input => {
   }
   console.log(input);
   return dispatch => {
-    // return axios
-    //   .post("/api/user/register", input)
-    //   .then(res => {})
-    //   .catch(err => {});
+    return axios
+      .post("/api/user/login", input)
+      .then(res => {
+        console.log(res.data);
+        dispatch(authSuccess(res.data));
+      })
+      .catch(err => {
+        console.log(err.response.data);
+      });
   };
 };
 
@@ -59,7 +64,7 @@ export const register = input => {
       .post("api/user/register", input)
       .then(res => {
         console.log(res.data);
-        dispatch(authSuccess(res.data.data));
+        dispatch(authSuccess(res.data));
         //loading kill
         msg.killLoading();
       })

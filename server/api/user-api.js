@@ -55,8 +55,9 @@ Router.post("/register", (req, res) => {
 });
 
 Router.post("/login", (req, res) => {
+  console.log(req.body);
   const { errors, isValid } = validateLoginInput(req.body);
-
+  console.log("login budy:", req.body);
   if (!isValid) {
     return res.status(400).json("please fill required data");
   }

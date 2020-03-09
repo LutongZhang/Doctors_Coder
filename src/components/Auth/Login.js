@@ -7,7 +7,7 @@ const Login = props => {
   const dispacher = useDispatch();
 
   const [credentialsForm, setCredentialsForm] = useState({
-    username: "",
+    userName: "",
     password: ""
   });
 
@@ -19,7 +19,6 @@ const Login = props => {
       ...credentialsForm,
       [name]: value
     });
-    console.log(credentialsForm);
   };
 
   const handleLogin = e => {
@@ -38,7 +37,7 @@ const Login = props => {
             <Form.Label>Username</Form.Label>
             <Form.Control
               type="text"
-              name="username"
+              name="userName"
               value={credentialsForm.username}
               onChange={formUpdate}
             ></Form.Control>
