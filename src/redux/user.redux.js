@@ -32,7 +32,19 @@ const authSuccess = userInfo => {
 
 //open function
 
-const login = input => {};
+export const login = input => {
+  if (!input) {
+    console.log("login input not exist");
+    return;
+  }
+  console.log(input);
+  return dispatch => {
+    // return axios
+    //   .post("/api/user/register", input)
+    //   .then(res => {})
+    //   .catch(err => {});
+  };
+};
 
 export const register = input => {
   if (!input) {

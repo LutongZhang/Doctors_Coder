@@ -15,13 +15,11 @@ const Router = express.Router();
 mongoose.connect(config.db.uri);
 
 Router.post("/register", (req, res) => {
-
   const { errors, isValid } = validateRegisterInput(req.body);
   console.log(errors);
   if (!isValid) {
     return res.status(400).json("registration failed");
   }
-  sendEmail(req.body);
 
   const newUser = new User({
     userName: req.body.userName,
@@ -40,6 +38,7 @@ Router.post("/register", (req, res) => {
         .save()
         .then(Userxx => {
           res.json({ userName: Userxx.userName });
+          sendEmail(req.body);
         })
         .catch(err => {
           console.log("err", err);
