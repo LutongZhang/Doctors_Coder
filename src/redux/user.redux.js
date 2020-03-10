@@ -3,6 +3,7 @@ import msg from "../message";
 
 //action
 const AUTH_SUCCESS = "AUTH_SUCCESS";
+const LOG_OUT = "LOG_OUT";
 
 let initialState = {
   userName: "",
@@ -18,6 +19,8 @@ export function user(state = initialState, action) {
         isAuth: true,
         ...action.info
       };
+    case LOG_OUT:
+      return { ...initialState };
     default:
       return state;
   }
@@ -30,6 +33,10 @@ export const authSuccess = userInfo => {
   return action;
 };
 
+export const logOut = () => {
+  return { type: LOG_OUT };
+};
+
 //open function
 
 export const login = input => {
@@ -39,15 +46,21 @@ export const login = input => {
   }
   console.log(input);
   return dispatch => {
+    //loading start
+    msg.createLoading();
     return axios
       .post("/api/user/login", input)
       .then(res => {
         console.log(res.data);
         dispatch(authSuccess(res.data));
+        //loading kill
+        msg.killLoading();
       })
       .catch(err => {
         msg.alert("danger", err.response.data);
         console.log(err.response.data);
+        //loading kill
+        msg.killLoading();
       });
   };
 };
@@ -75,14 +88,5 @@ export const register = input => {
         //loading kill
         msg.killLoading();
       });
-  };
-};
-
-export const getInfo = () => {
-  return dispatch => {
-    return axios.get("api/user/info").then(res => {
-      console.log(res.data);
-      dispatch(authSuccess(res.data));
-    });
   };
 };

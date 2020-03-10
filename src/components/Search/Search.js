@@ -1,6 +1,8 @@
 import React, { Component, useState, useEffect } from "react";
 import { Form } from "react-bootstrap";
 import axios from "axios";
+import { useSelector } from "react-redux";
+import { Redirect } from "react-router-dom";
 import {
   Card,
   CardColumns,
@@ -17,6 +19,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 const Search = props => {
+  const isAuth = useSelector(state => state.user.isAuth);
+  console.log("isAuth in search:", isAuth);
   const [keyWords, setKeyWords] = useState("");
   const [show, setShow] = useState({ InfoModal: false, addModal: false });
   const [chosen, setChosen] = useState({ keywords: [] });
@@ -60,6 +64,8 @@ const Search = props => {
 
   return (
     <div>
+      {!isAuth ? <Redirect to="/login"></Redirect> : null}
+
       <h2 style={{ textAlign: "center" }}>Search for devices</h2>
       <div
         style={{
