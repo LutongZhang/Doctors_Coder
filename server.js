@@ -3,6 +3,7 @@ const config = require("./server/config/config");
 const mongoose = require("mongoose");
 const app = express();
 const userRouter = require("./server/api/user-api");
+const deviceRouter = require("./server/api/device-api");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
@@ -12,9 +13,6 @@ mongoose.connect(config.db.uri, { useNewUrlParser: true });
 //check db connection
 var db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
-db.once("open", function() {
-  console.log("database connect");
-});
 
 app.use(cookieParser());
 app.use(bodyParser.json());
@@ -34,6 +32,7 @@ require("./server/userValidation/passport")(passport);
 
 //Router
 app.use("/api/user", userRouter);
+app.use("/api/devices", deviceRouter);
 
 app.listen(port, function() {
   console.log("Node app starts at port ", port);

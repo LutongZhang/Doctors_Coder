@@ -24,24 +24,43 @@ const Search = props => {
   const [keyWords, setKeyWords] = useState("");
   const [show, setShow] = useState({ InfoModal: false, addModal: false });
   const [chosen, setChosen] = useState({ keywords: [] });
-  const [devices, setDevices] = useState([
-    { name: "a", keywords: ["doctor", "surgeon"] },
-    { name: "a", keywords: ["doctor", "surgeon"] },
-    { name: "a", keywords: ["doctor", "surgeon"] },
-    { name: "a", keywords: ["doctor", "surgeon"] },
-    { name: "a", keywords: ["doctor", "surgeon"] },
-    { name: "a", keywords: ["doctor", "surgeon"] },
-    { name: "a", keywords: ["doctor", "surgeon"] },
-    { name: "a", keywords: ["doctor", "surgeon"] },
-    { name: "a", keywords: ["doctor", "surgeon"] },
-    { name: "a", keywords: ["doctor", "surgeon"] },
-    { name: "a", keywords: ["doctor", "surgeon"] },
-    { name: "a", keywords: ["doctor", "surgeon"] }
-  ]);
+  const [devices, setDevices] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("/api/devices/getDevices")
+      .then(res => {
+        setDevices(res.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  }, []);
 
   const handleChange = e => {
     setKeyWords(e.target.value);
   };
+
+  // filters total device list to only include items searched for
+  const filtered = devices.filter(device => {
+    let found = false;
+    device.keywords.forEach(word => {
+      if (word.toLowerCase().includes(keyWords.toLocaleLowerCase())) {
+        found = true;
+      }
+    });
+    return found;
+  });
+  // sorts the filtered list in alphabetical order based on name
+  filtered.sort(function(device1, device2) {
+    if (device1.name.toLowerCase() < device2.name.toLowerCase()) {
+      return -1;
+    }
+    if (device1.name.toLowerCase() > device2.name.toLowerCase()) {
+      return 1;
+    }
+    return 0;
+  });
 
   return (
     <div>
@@ -81,19 +100,17 @@ const Search = props => {
       <br></br>
       <br></br>
       <br></br>
+
       <Container>
         <CardColumns>
-          {devices.map((val, index) => {
+          {filtered.map((val, index) => {
             return (
               <Card
                 style={{ width: "80%" }}
                 key={index}
                 className="text-center"
               >
-                <Card.Img
-                  variant="top"
-                  src="https://drive.google.com/uc?export=view&id=1rmPXTNjntkdkuvPJ_XsZqhn41rW6lu2s"
-                />
+                <Card.Img variant="top" src={val.source} />
                 <Card.Body>
                   <Card.Title>{val.name}</Card.Title>
                 </Card.Body>
