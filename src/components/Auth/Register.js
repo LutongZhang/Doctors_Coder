@@ -83,7 +83,7 @@ const Register = props => {
           />
         </Form.Group>
         <Form.Group as={Col} controlId="password">
-          <Form.Label>Password</Form.Label>
+          <Form.Label>Password (Min of 6 Char.)</Form.Label>
           <Form.Control
             name="password"
             type="password"
