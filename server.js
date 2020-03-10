@@ -7,6 +7,7 @@ const deviceRouter = require("./server/api/device-api");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
+const path = require("path");
 
 var port = process.env.PORT || 5000;
 mongoose.connect(config.db.uri, { useNewUrlParser: true });
@@ -16,6 +17,14 @@ db.on("error", console.error.bind(console, "connection error:"));
 
 app.use(cookieParser());
 app.use(bodyParser.json());
+app.use("/", express.static(path.resolve("build")));
+app.use((req, res, next) => {
+  if (req.url.startsWith("/api/")) {
+    return next();
+  }
+  return res.sendFile(path.resolve("build/index.html"));
+});
+
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(

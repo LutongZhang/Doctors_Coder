@@ -66,7 +66,6 @@ class AuthRoute extends Component {
       .get("api/user/info")
       .then(res => {
         this.props.history.push("/search");
-        console.log(res.data);
         this.props.dispatch(authSuccess(res.data));
       })
       .catch(e => {

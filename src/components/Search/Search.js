@@ -30,6 +30,7 @@ const Search = props => {
     axios
       .get("/api/devices/getDevices")
       .then(res => {
+        console.log(res.data);
         setDevices(res.data);
       })
       .catch(e => {
@@ -51,7 +52,7 @@ const Search = props => {
     });
     return found;
   });
-  // sorts the filtered list in alphabetical order based on name
+  //sorts the filtered list in alphabetical order based on name
   filtered.sort(function(device1, device2) {
     if (device1.name.toLowerCase() < device2.name.toLowerCase()) {
       return -1;

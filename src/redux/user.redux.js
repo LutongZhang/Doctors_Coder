@@ -77,7 +77,6 @@ export const register = input => {
     return axios
       .post("api/user/register", input)
       .then(res => {
-        console.log(res.data);
         dispatch(authSuccess(res.data));
         //loading kill
         msg.killLoading();
