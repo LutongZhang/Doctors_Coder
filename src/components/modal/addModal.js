@@ -33,7 +33,7 @@ const AddModal = props => {
             return (
               <div key={index}>
                 <Form.Control
-                  placeholder="plase input keyword"
+                  placeholder="Please Input a Keyword"
                   value={val}
                   onChange={e => {
                     const newList = inputs.map((val, i) => {
@@ -53,7 +53,7 @@ const AddModal = props => {
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={addInput} variant="warning">
-            enter more keyword
+            Enter Another Keyword
           </Button>
 
           <Button variant="secondary" onClick={handleClose}>
