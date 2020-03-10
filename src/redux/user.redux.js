@@ -3,6 +3,7 @@ import msg from "../message";
 
 //action
 const AUTH_SUCCESS = "AUTH_SUCCESS";
+const LOG_OUT = "LOG_OUT";
 
 let initialState = {
   userName: "",
@@ -18,6 +19,8 @@ export function user(state = initialState, action) {
         isAuth: true,
         ...action.info
       };
+    case LOG_OUT:
+      return { ...initialState };
     default:
       return state;
   }
@@ -28,6 +31,10 @@ export function user(state = initialState, action) {
 export const authSuccess = userInfo => {
   const action = { type: AUTH_SUCCESS, info: userInfo };
   return action;
+};
+
+export const logOut = () => {
+  return { type: LOG_OUT };
 };
 
 //open function

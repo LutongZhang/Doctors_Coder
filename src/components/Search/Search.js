@@ -1,6 +1,8 @@
 import React, { Component, useState, useEffect } from "react";
 import { Form } from "react-bootstrap";
 import axios from "axios";
+import { useSelector } from "react-redux";
+import { Redirect } from "react-router-dom";
 import {
   Card,
   CardColumns,
@@ -17,6 +19,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 const Search = props => {
+  const isAuth = useSelector(state => state.user.isAuth);
+  console.log("isAuth in search:", isAuth);
   const [keyWords, setKeyWords] = useState("");
   const [show, setShow] = useState({ InfoModal: false, addModal: false });
   const [chosen, setChosen] = useState({ keywords: [] });
@@ -41,6 +45,8 @@ const Search = props => {
 
   return (
     <div>
+      {!isAuth ? <Redirect to="/login"></Redirect> : null}
+
       <h2 style={{ textAlign: "center" }}>Search for devices</h2>
       <div
         style={{
@@ -84,7 +90,10 @@ const Search = props => {
                 key={index}
                 className="text-center"
               >
-                <Card.Img variant="top" src="holder.js/100px180" />
+                <Card.Img
+                  variant="top"
+                  src="https://drive.google.com/uc?export=view&id=1rmPXTNjntkdkuvPJ_XsZqhn41rW6lu2s"
+                />
                 <Card.Body>
                   <Card.Title>{val.name}</Card.Title>
                 </Card.Body>

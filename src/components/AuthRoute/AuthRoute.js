@@ -20,7 +20,19 @@ const noMatch = () => {
 const createRoute = navList => {
   const routers = [];
   navList.forEach(element => {
-    if (element.name === "Home") {
+    if (element.name === "userCenter") {
+      element.subItem.forEach(subItem => {
+        if (subItem.name !== "logOut") {
+          routers.push(
+            <Route
+              path={subItem.path}
+              key={element.name}
+              component={element.component}
+            ></Route>
+          );
+        }
+      });
+    } else if (element.name === "Home") {
       routers.push(
         <Route
           path={element.path}
@@ -100,6 +112,16 @@ class AuthRoute extends Component {
         path: "/register",
         component: Register,
         hide: isAuth
+      },
+      {
+        name: "UserCenter",
+        type: "user",
+        hide: !isAuth,
+        subItem: [
+          {
+            name: "logOut"
+          }
+        ]
       }
     ];
     return (
