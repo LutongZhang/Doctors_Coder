@@ -20,35 +20,42 @@ const Search = props => {
   const [keyWords, setKeyWords] = useState("");
   const [show, setShow] = useState({ InfoModal: false, addModal: false });
   const [chosen, setChosen] = useState({ keywords: [] });
-  const [devices, setDevices] = useState([
-    { name: "Syringe", keywords: ["syringe", "needle", "sharp"], source: "https://upload.wikimedia.org/wikipedia/commons/1/1d/Syringe2.jpg"},
-	{ name: "Thermometer", keywords: ["thermometer", "temperature", "fever"], source: "https://upload.wikimedia.org/wikipedia/commons/1/17/Kwikthermometers.jpg"},
-	{ name: "Stethoscope", keywords: ["stethoscope", "ears", "listen", "chest"], source: "https://upload.wikimedia.org/wikipedia/commons/7/75/Stethoscope_1.jpg"},
-    { name: "Syringe", keywords: ["syringe", "needle", "sharp"], source: "https://upload.wikimedia.org/wikipedia/commons/1/1d/Syringe2.jpg"},
-	{ name: "Thermometer", keywords: ["thermometer", "temperature", "fever"], source: "https://upload.wikimedia.org/wikipedia/commons/1/17/Kwikthermometers.jpg"},
-	{ name: "Stethoscope", keywords: ["stethoscope", "ears", "listen", "chest"], source: "https://upload.wikimedia.org/wikipedia/commons/7/75/Stethoscope_1.jpg"}
-  ]);
+  const [devices, setDevices] = useState([]);
 
+  useEffect(() => {
+    axios
+      .get("/api/devices/getDevices")
+      .then(res => {
+        setDevices(res.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  }, []);
 
   const handleChange = e => {
     setKeyWords(e.target.value);
   };
 
-// filters total device list to only include items searched for
+  // filters total device list to only include items searched for
   const filtered = devices.filter(device => {
-	  var found = false;
-	  device.keywords.forEach(word => {
-		  if (word.toLowerCase().includes(keyWords)) {
-			  found = true;
-		  }
-	  });
-	  return found;
+    let found = false;
+    device.keywords.forEach(word => {
+      if (word.toLowerCase().includes(keyWords.toLocaleLowerCase())) {
+        found = true;
+      }
+    });
+    return found;
   });
-// sorts the filtered list in alphabetical order based on name
+  // sorts the filtered list in alphabetical order based on name
   filtered.sort(function(device1, device2) {
-	  if (device1.name.toLowerCase() < device2.name.toLowerCase()) {return -1;}
-	  if (device1.name.toLowerCase() > device2.name.toLowerCase()) {return 1;}
-	  return 0;
+    if (device1.name.toLowerCase() < device2.name.toLowerCase()) {
+      return -1;
+    }
+    if (device1.name.toLowerCase() > device2.name.toLowerCase()) {
+      return 1;
+    }
+    return 0;
   });
 
   return (
