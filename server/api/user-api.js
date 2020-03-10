@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("../config/config");
-var sendEmail = require("../mailer/emailFunctionality.js");
+const sendEmail = require("../mailer/emailFunctionality.js");
+const jwtDecode = require("jwt-decode");
 //User model
 const User = require("../models/user-model");
 
@@ -13,6 +14,24 @@ const validateLoginInput = require("../userValidation/login_validation");
 
 const Router = express.Router();
 mongoose.connect(config.db.uri);
+
+Router.get("/info", (req, res) => {
+  if (req.cookies.Bearer == null) {
+    return res.status(400).json({ message: "no cookie" });
+  }
+  const Info = jwtDecode(req.cookies.Bearer);
+  console.log("info:", Info);
+  const id = Info.id;
+  User.findById(id, (err, data) => {
+    if (err) {
+      return res.status(400).json({ message: "token useless" });
+    }
+    console.log(data);
+    res.json({
+      userName: data.userName
+    });
+  });
+});
 
 Router.post("/register", (req, res) => {
   const { errors, isValid } = validateRegisterInput(req.body);
@@ -37,8 +56,29 @@ Router.post("/register", (req, res) => {
       newUser
         .save()
         .then(Userxx => {
-          res.json({ userName: Userxx.userName });
-          sendEmail(req.body);
+          //console.log(Userxx);
+          const payload = {
+            id: Userxx._id
+          };
+
+          jwt.sign(
+            payload,
+            config.secretOrKey,
+            {
+              expiresIn: 31556926
+            },
+            (err, token) => {
+              res.cookie("Bearer", token);
+              res.json({
+                userName: Userxx.userName
+              });
+              //eamil send
+              sendEmail(req.body);
+            }
+          );
+          // res.json({ userName: Userxx.userName });
+          // //eamil send
+          // sendEmail(req.body);
         })
         .catch(err => {
           console.log("err", err);
@@ -74,8 +114,7 @@ Router.post("/login", (req, res) => {
     bcrypt.compare(password, User.password).then(isMatch => {
       if (isMatch) {
         const payload = {
-          id: User.id,
-          name: User.userName
+          id: User.id
         };
 
         jwt.sign(

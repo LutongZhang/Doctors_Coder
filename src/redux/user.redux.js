@@ -25,7 +25,7 @@ export function user(state = initialState, action) {
 
 //action creation
 
-const authSuccess = userInfo => {
+export const authSuccess = userInfo => {
   const action = { type: AUTH_SUCCESS, info: userInfo };
   return action;
 };
@@ -75,5 +75,14 @@ export const register = input => {
         //loading kill
         msg.killLoading();
       });
+  };
+};
+
+export const getInfo = () => {
+  return dispatch => {
+    return axios.get("api/user/info").then(res => {
+      console.log(res.data);
+      dispatch(authSuccess(res.data));
+    });
   };
 };
