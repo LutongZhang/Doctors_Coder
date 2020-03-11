@@ -86,10 +86,11 @@
     "workbox-webpack-plugin": "4.3.1"
   },
   "scripts": {
-    "start": "node scripts/start.js",
+    "start": "NODE_ENV=production node index.js",
     "build": "node scripts/build.js",
+    "client": "node scripts/start.js",
     "test": "node scripts/test.js",
-    "heroku-postbuild": "npm install"
+    "heroku-postbuild": "npm run build"
   },
   "engines": {
     "npm": "6.13.6",
