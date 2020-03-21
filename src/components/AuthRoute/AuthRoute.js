@@ -1,11 +1,13 @@
-import React, { Component } from "react";
+import React, { Component, useEffect } from "react";
 import Login from "../Auth/Login";
 import Register from "../Auth/Register";
 import Search from "../Search/Search";
+import Profile from "../userCenter/profile";
+import ChangePwd from "../userCenter/changepwd";
 import { Switch, Route } from "react-router-dom";
 import { connect } from "react-redux";
 import Navbar from "../Navbar/Navbar";
-import { withRouter } from "react-router";
+import { withRouter, Redirect } from "react-router";
 import { authSuccess } from "../../redux/user.redux";
 import axios from "axios";
 
@@ -13,54 +15,66 @@ const Home = () => {
   return <div>HomePage</div>;
 };
 
-const noMatch = () => {
-  return <div>noMatch</div>;
+const NoMatch = props => {
+  useEffect(() => {}, [props.isAuth]);
+  console.log(1);
+  return props.isAuth ? (
+    <Redirect to="/search"></Redirect>
+  ) : (
+    <Redirect to="/login"></Redirect>
+  );
 };
 
-const createRoute = navList => {
+const createRoute = (navList, isAuth) => {
   const routers = [];
   navList.forEach(element => {
-    if (element.name === "userCenter") {
-      element.subItem.forEach(subItem => {
-        if (subItem.name !== "logOut") {
-          routers.push(
-            <Route
-              path={subItem.path}
-              key={element.name}
-              component={element.component}
-            ></Route>
-          );
-        }
-      });
-    } else if (element.name === "Home") {
-      routers.push(
-        <Route
-          path={element.path}
-          exact
-          key={element.name}
-          component={element.component}
-        ></Route>
-      );
-    } else {
-      routers.push(
-        <Route
-          path={element.path}
-          key={element.name}
-          component={element.component}
-        ></Route>
-      );
+    if (element.hide !== true) {
+      if (element.name === "UserCenter") {
+        element.subItem.forEach(subItem => {
+          if (subItem.name !== "logOut") {
+            routers.push(
+              <Route
+                path={subItem.path}
+                key={subItem.name}
+                component={subItem.component}
+              ></Route>
+            );
+          }
+        });
+      } else if (element.name === "Home") {
+        routers.push(
+          <Route
+            path={element.path}
+            exact
+            key={element.name}
+            component={element.component}
+          ></Route>
+        );
+      } else {
+        routers.push(
+          <Route
+            path={element.path}
+            key={element.name}
+            component={element.component}
+          ></Route>
+        );
+      }
     }
   });
-  routers.push(<Route path="*" component={noMatch} key={noMatch}></Route>);
-  console.log(routers);
+  routers.push(
+    <Route
+      path="*"
+      component={() => {
+        return <NoMatch isAuth={isAuth}></NoMatch>;
+      }}
+      key={"NoMatch"}
+    ></Route>
+  );
+  //console.log(routers);
   return routers;
 };
 
 class AuthRoute extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
     axios
       .get("api/user/info")
@@ -82,7 +96,6 @@ class AuthRoute extends Component {
 
   render() {
     const isAuth = this.props.isAuth;
-    console.log(isAuth);
     const navList = [
       {
         name: "Home",
@@ -119,6 +132,16 @@ class AuthRoute extends Component {
         subItem: [
           {
             name: "logOut"
+          },
+          {
+            name: "profile",
+            path: "/profile",
+            component: Profile
+          },
+          {
+            name: "changePassword",
+            path: "/changePassword",
+            component: ChangePwd
           }
         ]
       }
@@ -126,7 +149,7 @@ class AuthRoute extends Component {
     return (
       <div>
         <Navbar navList={navList}></Navbar>
-        <Switch>{createRoute(navList)}</Switch>
+        <Switch>{createRoute(navList, isAuth)}</Switch>
       </div>
     );
   }

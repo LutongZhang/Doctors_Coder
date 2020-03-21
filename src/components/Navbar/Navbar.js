@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { Dropdown, DropdownButton } from "react-bootstrap";
 import { connect } from "react-redux";
 import { logOut } from "../../redux/user.redux";
@@ -69,13 +69,18 @@ class Navbar extends Component {
                           {element.subItem.map((subItem, key) => {
                             if (subItem.name !== "logOut") {
                               return (
-                                <Dropdown.Item eventKey={key}>
-                                  Another action
+                                <Dropdown.Item
+                                  eventKey={key}
+                                  key={key}
+                                  as={Link}
+                                  to={subItem.path}
+                                >
+                                  {subItem.name}
                                 </Dropdown.Item>
                               );
                             } else {
                               return (
-                                <div>
+                                <div key={key}>
                                   <Dropdown.Divider />
                                   <Dropdown.Item
                                     eventKey={key}

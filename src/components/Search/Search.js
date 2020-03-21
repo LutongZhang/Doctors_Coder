@@ -20,7 +20,6 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 const Search = props => {
   const isAuth = useSelector(state => state.user.isAuth);
-  console.log("isAuth in search:", isAuth);
   const [keyWords, setKeyWords] = useState("");
   const [show, setShow] = useState({ InfoModal: false, addModal: false });
   const [chosen, setChosen] = useState({ keywords: [] });
@@ -30,7 +29,6 @@ const Search = props => {
     axios
       .get("/api/devices/getDevices")
       .then(res => {
-        console.log(res.data);
         setDevices(res.data);
       })
       .catch(e => {
