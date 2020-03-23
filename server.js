@@ -10,7 +10,9 @@ const passport = require("passport");
 const path = require("path");
 
 var port = process.env.PORT || 5000;
-mongoose.connect(config.db.uri, { useNewUrlParser: true });
+mongoose.connect(process.env.DB_URI || config.db.uri, {
+  useNewUrlParser: true
+});
 //check db connection
 var db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));

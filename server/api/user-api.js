@@ -63,7 +63,7 @@ Router.post("/register", (req, res) => {
 
           jwt.sign(
             payload,
-            config.secretOrKey,
+            process.env.secretOrKey || config.secretOrKey,
             {
               expiresIn: 31556926
             },
@@ -119,7 +119,7 @@ Router.post("/login", (req, res) => {
 
         jwt.sign(
           payload,
-          config.secretOrKey,
+          process.env.secretOrKey || config.secretOrKey,
           {
             expiresIn: 31556926
           },
