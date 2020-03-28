@@ -25,7 +25,7 @@ const Search = props => {
   const [chosen, setChosen] = useState({ keywords: [] });
   const [devices, setDevices] = useState([]);
 
-  useEffect(() => {
+  const getDevices = () => {
     axios
       .get("/api/devices/getDevices")
       .then(res => {
@@ -34,6 +34,10 @@ const Search = props => {
       .catch(e => {
         console.log(e);
       });
+  };
+
+  useEffect(() => {
+    getDevices();
   }, []);
 
   const handleChange = e => {
@@ -51,15 +55,15 @@ const Search = props => {
     return found;
   });
   //sorts the filtered list in alphabetical order based on name
-  filtered.sort(function(device1, device2) {
-    if (device1.name.toLowerCase() < device2.name.toLowerCase()) {
-      return -1;
-    }
-    if (device1.name.toLowerCase() > device2.name.toLowerCase()) {
-      return 1;
-    }
-    return 0;
-  });
+  // filtered.sort(function(device1, device2) {
+  //   if (device1.name.toLowerCase() < device2.name.toLowerCase()) {
+  //     return -1;
+  //   }
+  //   if (device1.name.toLowerCase() > device2.name.toLowerCase()) {
+  //     return 1;
+  //   }
+  //   return 0;
+  // });
 
   return (
     <div>
@@ -127,6 +131,7 @@ const Search = props => {
                   <Button
                     variant="outline-dark"
                     onClick={() => {
+                      setChosen(val);
                       setShow({ ...show, addModal: true });
                       console.log(show);
                     }}
@@ -148,6 +153,10 @@ const Search = props => {
       ></InfoModal>
       <AddModal
         show={show.addModal}
+        device={chosen}
+        addKeywords={() => {
+          getDevices();
+        }}
         handleClose={() => {
           setShow({ ...show, addModal: false });
         }}
