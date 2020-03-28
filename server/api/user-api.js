@@ -28,7 +28,8 @@ Router.get("/info", (req, res) => {
     }
     console.log(data);
     res.json({
-      userName: data.userName
+      userName: data.userName,
+      email: data.email
     });
   });
 });
@@ -134,6 +135,76 @@ Router.post("/login", (req, res) => {
         return res.status(400).json("Password incorrect");
       }
     });
+  });
+});
+
+Router.get("/userList", (req, res) => {
+  if (req.cookies.Bearer == null) {
+    return res.status(400).json({ message: "no cookie" });
+  }
+  const Info = jwtDecode(req.cookies.Bearer);
+  console.log("info:", Info);
+  const id = Info.id;
+  User.findById(id, (err, data) => {
+    if (err) {
+      return res.status(400).json({ message: "token useless" });
+    }
+    console.log(data);
+
+    //Check if admin?
+    if(data.role != 'admin'){
+      return res.status(400).json({ message: "requires admin permission" });
+    }
+
+    User.find()
+        .then(data => {
+          let safeData = [];
+          data.forEach(element => {
+            const toAdd = {
+              userName: element.userName,
+              firstName: element.firstName,
+              lastName: element.lastName,
+              email: element.email
+            }
+            safeData.push(toAdd);
+          });
+          res.json(safeData);
+        })
+        .catch(e => {
+          res.status(400).json({ message: e });
+        }); 
+  });
+});
+
+Router.post("/deleteUser", (req, res) => {
+  if (req.cookies.Bearer == null) {
+    return res.status(400).json({ message: "no cookie" });
+  }
+  const Info = jwtDecode(req.cookies.Bearer);
+  console.log("info:", Info);
+  const id = Info.id;
+  User.findById(id, (err, data) => {
+    if (err) {
+      return res.status(400).json({ message: "token useless" });
+    }
+    console.log(data);
+
+    //Check if admin?
+    if(data.role != 'admin'){
+      return res.status(400).json({ message: "requires admin permission" });
+    }
+    const userName = req.body.userName;
+    User.findOneAndDelete({ userName })
+        .then(User => {
+          res.json({userName: User.userName,
+                    firstName: User.firstName,
+                    lastName: User.lastName,
+                    email: User.email
+          });
+    })
+        .catch(e => {
+          res.status(400).json({ message: e });
+        })
   });
 });
 
