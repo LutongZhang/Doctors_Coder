@@ -15,6 +15,7 @@ const validateLoginInput = require("../userValidation/login_validation");
 const Router = express.Router();
 mongoose.connect(config.db.uri);
 
+
 Router.get("/info", (req, res) => {
   if (req.cookies.Bearer == null) {
     return res.status(400).json({ message: "no cookie" });
