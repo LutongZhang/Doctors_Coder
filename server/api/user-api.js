@@ -29,7 +29,8 @@ Router.get("/info", (req, res) => {
     console.log(data);
     res.json({
       userName: data.userName,
-      email: data.email
+      email: data.email,
+      role: data.role
     });
   });
 });
@@ -71,7 +72,8 @@ Router.post("/register", (req, res) => {
             (err, token) => {
               res.cookie("Bearer", token);
               res.json({
-                userName: Userxx.userName
+                userName: Userxx.userName,
+                role: Userxx.role
               });
               //eamil send
               sendEmail(req.body);
@@ -127,7 +129,8 @@ Router.post("/login", (req, res) => {
           (err, token) => {
             res.cookie("Bearer", token);
             res.json({
-              userName: User.userName
+              userName: User.userName,
+              role: User.role
             });
           }
         );
@@ -152,27 +155,27 @@ Router.get("/userList", (req, res) => {
     console.log(data);
 
     //Check if admin?
-    if(data.role != 'admin'){
+    if (data.role != "admin") {
       return res.status(400).json({ message: "requires admin permission" });
     }
 
     User.find()
-        .then(data => {
-          let safeData = [];
-          data.forEach(element => {
-            const toAdd = {
-              userName: element.userName,
-              firstName: element.firstName,
-              lastName: element.lastName,
-              email: element.email
-            }
-            safeData.push(toAdd);
-          });
-          res.json(safeData);
-        })
-        .catch(e => {
-          res.status(400).json({ message: e });
-        }); 
+      .then(data => {
+        let safeData = [];
+        data.forEach(element => {
+          const toAdd = {
+            userName: element.userName,
+            firstName: element.firstName,
+            lastName: element.lastName,
+            email: element.email
+          };
+          safeData.push(toAdd);
+        });
+        res.json(safeData);
+      })
+      .catch(e => {
+        res.status(400).json({ message: e });
+      });
   });
 });
 
@@ -190,21 +193,22 @@ Router.post("/deleteUser", (req, res) => {
     console.log(data);
 
     //Check if admin?
-    if(data.role != 'admin'){
+    if (data.role != "admin") {
       return res.status(400).json({ message: "requires admin permission" });
     }
     const userName = req.body.userName;
     User.findOneAndDelete({ userName })
-        .then(User => {
-          res.json({userName: User.userName,
-                    firstName: User.firstName,
-                    lastName: User.lastName,
-                    email: User.email
-          });
-    })
-        .catch(e => {
-          res.status(400).json({ message: e });
-        })
+      .then(User => {
+        res.json({
+          userName: User.userName,
+          firstName: User.firstName,
+          lastName: User.lastName,
+          email: User.email
+        });
+      })
+      .catch(e => {
+        res.status(400).json({ message: e });
+      });
   });
 });
 

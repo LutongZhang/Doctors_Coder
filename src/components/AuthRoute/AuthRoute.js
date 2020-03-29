@@ -75,11 +75,13 @@ const createRoute = (navList, isAuth) => {
 };
 
 class AuthRoute extends Component {
-  componentDidMount() {
+  constructor(props) {
+    super(props);
     axios
       .get("api/user/info")
       .then(res => {
         this.props.history.push("/search");
+
         this.props.dispatch(authSuccess(res.data));
       })
       .catch(e => {
@@ -93,9 +95,11 @@ class AuthRoute extends Component {
         }
       });
   }
+  componentDidMount() {}
 
   render() {
     const isAuth = this.props.isAuth;
+    console.log("user", this.props);
     const navList = [
       {
         name: "Home",

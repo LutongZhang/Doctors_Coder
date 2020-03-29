@@ -29,6 +29,7 @@ export function user(state = initialState, action) {
 //action creation
 
 export const authSuccess = userInfo => {
+  console.log("info", userInfo);
   const action = { type: AUTH_SUCCESS, info: userInfo };
   return action;
 };

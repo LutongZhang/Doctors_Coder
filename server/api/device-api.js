@@ -5,15 +5,31 @@ const isEmpty = require("is-empty");
 const jwtDecode = require("jwt-decode");
 const User = require("../models/user-model");
 const fileUpload = require("express-fileupload");
+const fs = require("fs");
+const path = require("path");
 
 const Router = express.Router();
 
+//file upload middleware
 Router.use(fileUpload());
 
 Router.get("/getDevices", (req, res) => {
   Device.find()
     .then(data => {
-      res.json(data);
+      data = data.map(val => {
+        obj = {};
+        obj._id = val._id;
+        obj.name = val.name;
+        obj.keywords = val.keywords;
+        obj.buffer = fs.readFileSync(
+          path.resolve(__dirname, `../devices_images/${val.source}`)
+        );
+
+        return obj;
+      });
+
+      //console.log(data);
+      res.send(data);
     })
     .catch(e => {
       res.status(400).json({ msg: e });
@@ -61,6 +77,7 @@ Router.get("/getDeviceID", (req, res) => {
     }
     res.json(device.id);
   });
+  res.end();
 });
 
 Router.post("/addDevice", (req, res) => {
@@ -88,13 +105,24 @@ Router.post("/addDevice", (req, res) => {
     if (isEmpty(req.body.keywords)) {
       return res.status(400).json({ message: "keywords are required" });
     }
-    //Check source
-
+    //save images
+    if (req.files === null) {
+      return res.status(400).json({ msg: "No file uploaded" });
+    }
+    const file = req.files.file;
+    console.log(file);
+    console.log(req.body);
+    file.mv(`${__dirname}/../devices_images/${file.name}`, err => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send(err);
+      }
+    });
     //Create Device
     const newDevice = new Device({
       name: req.body.name,
       keywords: req.body.keywords,
-      source: req.body.source //?
+      source: file.name //?
     });
 
     //Save Device
@@ -126,40 +154,24 @@ Router.post("/deleteDevice", (req, res) => {
       return res.status(400).json({ message: "token useless" });
     }
     console.log(data);
-
     //Check if admin?
     if (data.role != "admin") {
       return res.status(400).json({ message: "requires admin permission" });
     }
 
     //Find and remove device
-    if (isEmpty(req.body.id)) {
+
+    if (isEmpty(req.body.deviceId)) {
       return res.status(400).json({ message: "id is required" });
     }
-    Device.findByIdAndDelete(req.body.id, (err, device) => {
+
+    console.log("deviceID:", req.body.deviceId);
+
+    Device.findByIdAndDelete(req.body.deviceId, (err, device) => {
       if (err) {
         return res.status(400).json({ message: "device not found" });
       }
       res.json(device);
-    });
-  });
-});
-
-Router.post("/addFile", (req, res) => {
-  if (req.files === null) {
-    return res.status(400).json({ msg: "No file uploaded" });
-  }
-  const file = req.files.file;
-
-  file.mv(`${__dirname}/../devices_images/${file.name}`, err => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send(err);
-    }
-
-    res.json({
-      fileName: file.name,
-      filePath: `../../../server/devices_images/${file.name}`
     });
   });
 });
