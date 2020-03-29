@@ -4,6 +4,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 import NewDevModal from "../modal/NewDevModal";
+import Timer from "../Timer/Timer.js"
 import {
   Card,
   CardColumns,
@@ -49,7 +50,6 @@ const Search = props => {
       .get("/api/devices/getDevices")
       .then(res => {
         //console.log("data:", res.data);
-
         const array = res.data.map(val => {
           const base64Flag = "data:image/jpeg;base64,";
           const imageStr = arrayBufferToBase64(val.buffer.data);
@@ -171,6 +171,7 @@ const Search = props => {
                   <Button
                     variant="outline-info"
                     onClick={() => {
+					Timer(val.name,user)
                       setChosen(val);
                       setShow({ ...show, InfoModal: true });
                     }}
