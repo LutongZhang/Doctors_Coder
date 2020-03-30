@@ -1,6 +1,6 @@
 var nodemailer = require("nodemailer");
 
-module.exports = function sendEmail(userInfo) {
+module.exports = function sendEmail(userInfo, subject, body) {
   console.log(userInfo);
   var transporter = nodemailer.createTransport({
     //creating transport obfject for nodemailer
@@ -18,12 +18,8 @@ module.exports = function sendEmail(userInfo) {
     //nodemailer email
     from: "DocsCoder123@gmail.com",
     to: userInfo.email,
-    subject: "Succesful signup for Doctors Coder",
-    text:
-      "This is an email to let you know that you have succesfully registered for Doctors Coder. \nYour username is: " +
-      userInfo.userName +
-      "\nYour password is: " +
-      userInfo.password
+    subject: subject,
+    html: body
   };
   console.log("sending mail!");
 
