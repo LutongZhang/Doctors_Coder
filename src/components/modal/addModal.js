@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, Modal, Form, Row, Col } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
 
 const AddModal = props => {
   const [inputs, setInputs] = useState([""]);
@@ -11,10 +12,16 @@ const AddModal = props => {
   };
 
   const saveChanges = () => {
-    console.log(inputs);
-
-    setInputs([""]);
-    props.handleClose();
+    axios
+      .post("api/devices/addKey", { addKey: inputs, device: props.device.name })
+      .then(val => {
+        props.addKeywords();
+        setInputs([""]);
+        props.handleClose();
+      })
+      .catch(err => {
+        console.log("err:", err);
+      });
   };
 
   const handleClose = () => {

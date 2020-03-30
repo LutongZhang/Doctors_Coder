@@ -3,6 +3,8 @@ import { Form } from "react-bootstrap";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
+import NewDevModal from "../modal/NewDevModal";
+import Timer from "../Timer/Timer.js"
 import {
   Card,
   CardColumns,
@@ -19,22 +21,69 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 const Search = props => {
-  const isAuth = useSelector(state => state.user.isAuth);
+  const user = useSelector(state => state.user);
+  const { isAuth, role } = user;
   const [keyWords, setKeyWords] = useState("");
-  const [show, setShow] = useState({ InfoModal: false, addModal: false });
+  const [show, setShow] = useState({
+    InfoModal: false,
+    addModal: false,
+    NewDevModal: false
+  });
   const [chosen, setChosen] = useState({ keywords: [] });
   const [devices, setDevices] = useState([]);
 
+  function arrayBufferToBase64(buffer) {
+    var binary = "";
+    var bytes = [].slice.call(new Uint8Array(buffer));
+    bytes.forEach(b => (binary += String.fromCharCode(b)));
+
+    return window.btoa(binary);
+  }
+
   useEffect(() => {
+    getDevices();
+  }, []);
+
+  const getDevices = () => {
+    console.log("devices");
     axios
       .get("/api/devices/getDevices")
       .then(res => {
-        setDevices(res.data);
+        //console.log("data:", res.data);
+        const array = res.data.map(val => {
+          const base64Flag = "data:image/jpeg;base64,";
+          const imageStr = arrayBufferToBase64(val.buffer.data);
+          const filePath = base64Flag + imageStr;
+          val.filePath = filePath;
+          const obj = {
+            _id: val._id,
+            name: val.name,
+            keywords: val.keywords,
+            filePath: filePath
+          };
+          return obj;
+        });
+        console.log(array);
+        setDevices(array);
       })
       .catch(e => {
         console.log(e);
       });
-  }, []);
+  };
+
+  const deleteDevice = deviceId => {
+    console.log(deviceId);
+
+    axios
+      .post("/api/devices/deleteDevice", { deviceId: deviceId })
+      .then(res => {
+        console.log(res.data);
+        getDevices();
+      })
+      .catch(err => {
+        console.log(err.response.message);
+      });
+  };
 
   const handleChange = e => {
     setKeyWords(e.target.value);
@@ -50,20 +99,26 @@ const Search = props => {
     });
     return found;
   });
-  //sorts the filtered list in alphabetical order based on name
-  filtered.sort(function(device1, device2) {
-    if (device1.name.toLowerCase() < device2.name.toLowerCase()) {
-      return -1;
-    }
-    if (device1.name.toLowerCase() > device2.name.toLowerCase()) {
-      return 1;
-    }
-    return 0;
-  });
+
+  ////////////
+  //file upload
 
   return (
     <div>
       {!isAuth ? <Redirect to="/login"></Redirect> : null}
+
+      {/* {adminshow} */}
+      {role == "admin" ? (
+        <Button
+          variant="success"
+          onClick={() => {
+            setShow({ ...show, NewDevModal: true });
+            console.log(show);
+          }}
+        >
+          Add New Device
+        </Button>
+      ) : null}
 
       <h2 style={{ textAlign: "center" }}>Search for devices</h2>
       <div
@@ -99,7 +154,6 @@ const Search = props => {
       <br></br>
       <br></br>
       <br></br>
-
       <Container>
         <CardColumns>
           {filtered.map((val, index) => {
@@ -109,30 +163,54 @@ const Search = props => {
                 key={index}
                 className="text-center"
               >
-                <Card.Img variant="top" src={val.source} />
+                <Card.Img variant="top" src={val.filePath} />
                 <Card.Body>
                   <Card.Title>{val.name}</Card.Title>
                 </Card.Body>
                 <Card.Footer>
                   <Button
                     variant="outline-info"
-                    style={{ marginRight: "40%" }}
                     onClick={() => {
+					Timer(val.name,user)
                       setChosen(val);
                       setShow({ ...show, InfoModal: true });
                     }}
                   >
                     Info
                   </Button>
-                  <Button
+                  {role == "admin" ? (
+                    <>
+                      <Button
+                        variant="outline-dark"
+                        onClick={() => {
+                          setChosen(val);
+                          setShow({ ...show, addModal: true });
+                          console.log(show);
+                        }}
+                      >
+                        Add Key
+                      </Button>
+                      <Button
+                        variant="outline-danger"
+                        onClick={() => {
+                          setChosen(val);
+                          deleteDevice(val._id);
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </>
+                  ) : null}
+                  {/* <Button
                     variant="outline-dark"
                     onClick={() => {
+                      setChosen(val);
                       setShow({ ...show, addModal: true });
                       console.log(show);
                     }}
                   >
                     Add
-                  </Button>
+                  </Button> */}
                 </Card.Footer>
               </Card>
             );
@@ -146,12 +224,26 @@ const Search = props => {
         }}
         keywords={chosen.keywords}
       ></InfoModal>
-      <AddModal
-        show={show.addModal}
-        handleClose={() => {
-          setShow({ ...show, addModal: false });
-        }}
-      ></AddModal>
+      {role == "admin" ? (
+        <>
+          <AddModal
+            show={show.addModal}
+            device={chosen}
+            addKeywords={() => {
+              getDevices();
+            }}
+            handleClose={() => {
+              setShow({ ...show, addModal: false });
+            }}
+          ></AddModal>
+          <NewDevModal
+            show={show.NewDevModal}
+            handleClose={() => {
+              setShow({ ...show, NewDevModal: false });
+            }}
+          ></NewDevModal>
+        </>
+      ) : null}
     </div>
   );
 };

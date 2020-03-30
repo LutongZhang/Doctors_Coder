@@ -2,33 +2,25 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const userModel = new Schema({
+
   userName: {
     type: String,
     required: true,
-    unique: true,
-    trim: true
+	unique: false
   },
-  firstName: {
+  device: {
     type: String,
     required: true
   },
-  lastName: {
+  
+  checkoutTime: {
     type: String,
     required: true
   },
-  email: {
+  checkinTime: {
     type: String,
     required: true,
-    unique: true
-  },
-  password: {
-    type: String,
-    required: true
-  },
-  role: {
-    type: String,
-    default: 'user'
   }
 });
 
-module.exports = mongoose.model("User", userModel);
+module.exports = mongoose.model("Checkout1", userModel);
