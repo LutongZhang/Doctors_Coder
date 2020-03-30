@@ -8,7 +8,7 @@ const Profile = props => {
 
   const getUserCheckout = () => {
     axios
-      .post("/api/devices/getUserCheckout", { userName: user.userName })
+      .post("/api/checkout/getUserCheckout", { userName: user.userName })
       .then(res => {
         setCheckedOut(res.data);
       })

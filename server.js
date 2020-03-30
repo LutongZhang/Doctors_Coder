@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const app = express();
 const userRouter = require("./server/api/user-api");
 const deviceRouter = require("./server/api/device-api");
+const checkoutRouter = require("./server/api/checkout-api");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
@@ -44,6 +45,7 @@ require("./server/userValidation/passport")(passport);
 //Router
 app.use("/api/user", userRouter);
 app.use("/api/devices", deviceRouter);
+app.use("/api/checkout", checkoutRouter);
 
 app.listen(port, function() {
   console.log("Node app starts at port ", port);

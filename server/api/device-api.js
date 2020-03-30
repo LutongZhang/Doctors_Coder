@@ -1,7 +1,5 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const Device = require("../models/device-model");
-const Checkout1 = require("../models/checkout-model");
 const isEmpty = require("is-empty");
 const jwtDecode = require("jwt-decode");
 const User = require("../models/user-model");
@@ -10,40 +8,11 @@ const fs = require("fs");
 const path = require("path");
 const config = require("../config/config");
 
-
-
 const Router = express.Router();
-mongoose.connect(config.db.uri);
+// mongoose.connect(config.db.uri);
 
 //file upload middleware
 Router.use(fileUpload());
-
-
-Router.post("/checkout", (req, res) => {
-	const newCheckout = new Checkout1({
-    userName: req.body.userName,
-    device: req.body.device,
-    checkoutTime: req.body.checkoutTime,
-    checkinTime: req.body.checkinTime
-  });
-  console.log(newCheckout)
-newCheckout.save().then(Checkout1=>{
-	console.log('success');	
-});
-  res.end('success');
-});
-
-Router.post("/getUserCheckout",(req,res)=>{
-	console.log(req.body.userName);
-	 Checkout1.find({userName : req.body.userName},function (err,checkout){
-					if(err)
-					res.end("error");
-					else{
-				    res.json(checkout);
-					res.end();
-					}
-});		
-});
 
 Router.get("/getDevices", (req, res) => {
   Device.find()
@@ -67,9 +36,6 @@ Router.get("/getDevices", (req, res) => {
       res.status(400).json({ msg: e });
     });
 });
-
-
-
 
 Router.post("/addKey", (req, res) => {
   const device = req.body.device;
@@ -177,8 +143,6 @@ Router.post("/addDevice", (req, res) => {
   });
 });
 
-
-
 Router.post("/deleteDevice", (req, res) => {
   if (req.cookies.Bearer == null) {
     return res.status(400).json({ message: "no cookie" });
@@ -195,8 +159,6 @@ Router.post("/deleteDevice", (req, res) => {
     if (data.role != "admin") {
       return res.status(400).json({ message: "requires admin permission" });
     }
-	
-	
 
     //Find and remove device
 
