@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import msg from "../../message";
 export default function Timer(device, user) {
   var date = new Date();
   var ampm = date.getHours >= 12 ? "PM" : "AM";
@@ -18,7 +18,6 @@ export default function Timer(device, user) {
     min +
     " " +
     ampm;
-  alert(user.userName + ", you have checked out: " + device + ".");
 
   axios
     .post("/api/checkout/checkout", {
@@ -28,6 +27,10 @@ export default function Timer(device, user) {
       checkinTime: "etes"
     })
     .then(res => {
+      msg.alert(
+        "success",
+        user.userName + ", you have checked out: " + device + "."
+      );
       console.log(res.data);
     })
     .catch(err => {

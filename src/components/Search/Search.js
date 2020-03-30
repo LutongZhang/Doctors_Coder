@@ -4,7 +4,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 import NewDevModal from "../modal/NewDevModal";
-import Timer from "../Timer/Timer.js"
+import Timer from "../Timer/Timer.js";
 import {
   Card,
   CardColumns,
@@ -16,9 +16,10 @@ import {
   Col
 } from "react-bootstrap";
 import AddModal from "../modal/addModal";
-import InfoModal from "../modal/InfoModal";
+// import InfoModal from "../modal/InfoModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import msg from "../../message";
 
 const Search = props => {
   const user = useSelector(state => state.user);
@@ -45,7 +46,7 @@ const Search = props => {
   }, []);
 
   const getDevices = () => {
-    console.log("devices");
+    msg.createLoading();
     axios
       .get("/api/devices/getDevices")
       .then(res => {
@@ -65,9 +66,11 @@ const Search = props => {
         });
         console.log(array);
         setDevices(array);
+        msg.killLoading();
       })
       .catch(e => {
         console.log(e);
+        msg.killLoading();
       });
   };
 
@@ -78,7 +81,8 @@ const Search = props => {
       .post("/api/devices/deleteDevice", { deviceId: deviceId })
       .then(res => {
         console.log(res.data);
-        getDevices();
+        window.location.reload();
+        //getDevices();
       })
       .catch(err => {
         console.log(err.response.message);
@@ -166,17 +170,26 @@ const Search = props => {
                 <Card.Img variant="top" src={val.filePath} />
                 <Card.Body>
                   <Card.Title>{val.name}</Card.Title>
+                  <strong>keywords:</strong>
+                  <Card.Text>{val.keywords.join(" / ")}</Card.Text>
                 </Card.Body>
                 <Card.Footer>
-                  <Button
+                  {/* <Button
                     variant="outline-info"
                     onClick={() => {
-					Timer(val.name,user)
                       setChosen(val);
                       setShow({ ...show, InfoModal: true });
                     }}
                   >
                     Info
+                  </Button> */}
+                  <Button
+                    variant="outline-primary"
+                    onClick={() => {
+                      Timer(val.name, user);
+                    }}
+                  >
+                    Checkout
                   </Button>
                   {role == "admin" ? (
                     <>
@@ -188,7 +201,7 @@ const Search = props => {
                           console.log(show);
                         }}
                       >
-                        Add Key
+                        AddKey
                       </Button>
                       <Button
                         variant="outline-danger"
@@ -217,20 +230,20 @@ const Search = props => {
           })}
         </CardColumns>
       </Container>
-      <InfoModal
+      {/* <InfoModal
         show={show.InfoModal}
         handleClose={() => {
           setShow({ ...show, InfoModal: false });
         }}
         keywords={chosen.keywords}
-      ></InfoModal>
+      ></InfoModal> */}
       {role == "admin" ? (
         <>
           <AddModal
             show={show.addModal}
             device={chosen}
             addKeywords={() => {
-              getDevices();
+              //getDevices();
             }}
             handleClose={() => {
               setShow({ ...show, addModal: false });
