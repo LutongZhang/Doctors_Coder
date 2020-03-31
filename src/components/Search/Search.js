@@ -168,8 +168,8 @@ const Search = props => {
         <CardColumns>
           {filtered.map((val, index) => {
             return (
-              <div className="cardWrapper">
-                <Card key={index} className="text-center">
+              <div className="cardWrapper" key={index}>
+                <Card className="text-center">
                   <Card.Img
                     variant="top"
                     style={{
@@ -188,8 +188,10 @@ const Search = props => {
                         {val.name}
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
-                        {val.keywords.map(word => (
-                          <Dropdown.Item href="#">{word}</Dropdown.Item>
+                        {val.keywords.map((word, i) => (
+                          <Dropdown.Item href="#" key={i}>
+                            {word}
+                          </Dropdown.Item>
                         ))}
                       </Dropdown.Menu>
                     </Dropdown>
