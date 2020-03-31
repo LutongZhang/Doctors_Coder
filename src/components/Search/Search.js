@@ -112,7 +112,6 @@ const Search = props => {
     <div>
       {!isAuth ? <Redirect to="/login"></Redirect> : null}
 
-
       <h2 style={{ textAlign: "center" }}>Search for devices</h2>
       <div
         style={{
@@ -121,9 +120,8 @@ const Search = props => {
           justifyContent: "center"
         }}
       >
-	  <Form style={{ width: "50%" }}>
-        <Form.Row>
-          <Form.Group as={Col} md="8">
+        <Form style={{ width: "50%" }}>
+          <Form.Group md="8">
             <InputGroup>
               <InputGroup.Prepend>
                 <InputGroup.Text>
@@ -138,48 +136,65 @@ const Search = props => {
               />
             </InputGroup>
           </Form.Group>
-		  <Col md="4">
-	        {/* {adminshow} */}
-	        {role == "admin" ? (
-	          <Button
-	            variant="success"
-	            onClick={() => {
-	              setShow({ ...show, NewDevModal: true });
-	              console.log(show);
-			  }}
-	          >
-	            Add New Device
-	          </Button>
-	        ) : null}
-			</Col>
-        </Form.Row>
-		</Form>
+        </Form>
+      </div>
+      <br></br>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        {/* {adminshow} */}
+        {role == "admin" ? (
+          <Button
+            variant="success"
+            onClick={() => {
+              setShow({ ...show, NewDevModal: true });
+              console.log(show);
+            }}
+            className="addDeviceButton"
+            size="lg"
+          >
+            Add New Device
+          </Button>
+        ) : null}
       </div>
       <br></br>
       <br></br>
-      <br></br>
-      <br></br>
+
       <Container>
         <CardColumns>
           {filtered.map((val, index) => {
             return (
-  	  		<div className="cardWrapper">
-              <Card
-                key={index}
-                className="text-center"
-              >
-                <Card.Img variant="top" src={val.filePath} />
-                <Card.Body>
-				  <Dropdown drop="up">
-					  <Dropdown.Toggle variant="success" id="dropdown-basic">
-					    {val.name}
-					  </Dropdown.Toggle>
-					  <Dropdown.Menu>
-					  {val.keywords.map(word => <Dropdown.Item href="#">{word}</Dropdown.Item>)}
-                  		</Dropdown.Menu>
-				  </Dropdown>
-                </Card.Body>
-				</Card>
+              <div className="cardWrapper">
+                <Card key={index} className="text-center">
+                  <Card.Img
+                    variant="top"
+                    style={{
+                      width: "60%",
+                      height: "150px"
+                      //maxHeight: "auto",
+                      //float: "left",
+                      // margin: "3px",
+                      // padding: "3px"
+                    }}
+                    src={val.filePath}
+                  />
+                  <Card.Body>
+                    <Dropdown drop="up">
+                      <Dropdown.Toggle variant="success" id="dropdown-basic">
+                        {val.name}
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu>
+                        {val.keywords.map(word => (
+                          <Dropdown.Item href="#">{word}</Dropdown.Item>
+                        ))}
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  </Card.Body>
+                </Card>
                 <div className="buttonOverlay">
                   {/* <Button
                     variant="outline-info"
@@ -231,8 +246,8 @@ const Search = props => {
                   >
                     Add
                   </Button> */}
+                </div>
               </div>
-			  </div>
             );
           })}
         </CardColumns>
