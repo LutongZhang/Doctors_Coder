@@ -18,6 +18,7 @@ const AddModal = props => {
         props.addKeywords();
         setInputs([""]);
         props.handleClose();
+        window.location.reload();
       })
       .catch(err => {
         console.log("err:", err);

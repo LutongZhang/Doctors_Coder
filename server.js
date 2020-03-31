@@ -9,6 +9,7 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
 const path = require("path");
+const hbs = require("hbs");
 
 var port = process.env.PORT || 5000;
 mongoose.connect(process.env.DB_URI || config.db.uri, {
@@ -18,6 +19,8 @@ mongoose.connect(process.env.DB_URI || config.db.uri, {
 var db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
 
+app.set("view engine", "html");
+app.engine("html", hbs.__express);
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use("/", express.static(path.resolve("build")));

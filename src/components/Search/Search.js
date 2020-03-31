@@ -1,10 +1,9 @@
 import React, { Component, useState, useEffect } from "react";
-import { Form } from "react-bootstrap";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 import NewDevModal from "../modal/NewDevModal";
-import Timer from "../Timer/Timer.js"
+import Timer from "../Timer/Timer.js";
 import {
   Card,
   CardColumns,
@@ -13,12 +12,15 @@ import {
   Button,
   InputGroup,
   Container,
-  Col
+  Col,
+  Dropdown,
+  Form
 } from "react-bootstrap";
 import AddModal from "../modal/addModal";
-import InfoModal from "../modal/InfoModal";
+// import InfoModal from "../modal/InfoModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import msg from "../../message";
 
 const Search = props => {
   const user = useSelector(state => state.user);
@@ -45,7 +47,7 @@ const Search = props => {
   }, []);
 
   const getDevices = () => {
-    console.log("devices");
+    msg.createLoading();
     axios
       .get("/api/devices/getDevices")
       .then(res => {
@@ -65,9 +67,11 @@ const Search = props => {
         });
         console.log(array);
         setDevices(array);
+        msg.killLoading();
       })
       .catch(e => {
         console.log(e);
+        msg.killLoading();
       });
   };
 
@@ -78,7 +82,8 @@ const Search = props => {
       .post("/api/devices/deleteDevice", { deviceId: deviceId })
       .then(res => {
         console.log(res.data);
-        getDevices();
+        window.location.reload();
+        //getDevices();
       })
       .catch(err => {
         console.log(err.response.message);
@@ -107,19 +112,6 @@ const Search = props => {
     <div>
       {!isAuth ? <Redirect to="/login"></Redirect> : null}
 
-      {/* {adminshow} */}
-      {role == "admin" ? (
-        <Button
-          variant="success"
-          onClick={() => {
-            setShow({ ...show, NewDevModal: true });
-            console.log(show);
-          }}
-        >
-          Add New Device
-        </Button>
-      ) : null}
-
       <h2 style={{ textAlign: "center" }}>Search for devices</h2>
       <div
         style={{
@@ -128,12 +120,8 @@ const Search = props => {
           justifyContent: "center"
         }}
       >
-        <Form.Row
-          style={{
-            width: "50%"
-          }}
-        >
-          <Form.Group as={Col}>
+        <Form style={{ width: "50%" }}>
+          <Form.Group md="8">
             <InputGroup>
               <InputGroup.Prepend>
                 <InputGroup.Text>
@@ -148,35 +136,82 @@ const Search = props => {
               />
             </InputGroup>
           </Form.Group>
-        </Form.Row>
+        </Form>
+      </div>
+      <br></br>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        {/* {adminshow} */}
+        {role == "admin" ? (
+          <Button
+            variant="success"
+            onClick={() => {
+              setShow({ ...show, NewDevModal: true });
+              console.log(show);
+            }}
+            className="addDeviceButton"
+            size="lg"
+          >
+            Add New Device
+          </Button>
+        ) : null}
       </div>
       <br></br>
       <br></br>
-      <br></br>
-      <br></br>
+
       <Container>
         <CardColumns>
           {filtered.map((val, index) => {
             return (
-              <Card
-                style={{ width: "80%" }}
-                key={index}
-                className="text-center"
-              >
-                <Card.Img variant="top" src={val.filePath} />
-                <Card.Body>
-                  <Card.Title>{val.name}</Card.Title>
-                </Card.Body>
-                <Card.Footer>
-                  <Button
+              <div className="cardWrapper">
+                <Card key={index} className="text-center">
+                  <Card.Img
+                    variant="top"
+                    style={{
+                      width: "60%",
+                      height: "150px"
+                      //maxHeight: "auto",
+                      //float: "left",
+                      // margin: "3px",
+                      // padding: "3px"
+                    }}
+                    src={val.filePath}
+                  />
+                  <Card.Body>
+                    <Dropdown drop="up">
+                      <Dropdown.Toggle variant="success" id="dropdown-basic">
+                        {val.name}
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu>
+                        {val.keywords.map(word => (
+                          <Dropdown.Item href="#">{word}</Dropdown.Item>
+                        ))}
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  </Card.Body>
+                </Card>
+                <div className="buttonOverlay">
+                  {/* <Button
                     variant="outline-info"
                     onClick={() => {
-					Timer(val.name,user)
                       setChosen(val);
                       setShow({ ...show, InfoModal: true });
                     }}
                   >
                     Info
+                  </Button> */}
+                  <Button
+                    variant="outline-primary"
+                    onClick={() => {
+                      Timer(val.name, user);
+                    }}
+                  >
+                    Checkout
                   </Button>
                   {role == "admin" ? (
                     <>
@@ -188,7 +223,7 @@ const Search = props => {
                           console.log(show);
                         }}
                       >
-                        Add Key
+                        AddKey
                       </Button>
                       <Button
                         variant="outline-danger"
@@ -211,26 +246,26 @@ const Search = props => {
                   >
                     Add
                   </Button> */}
-                </Card.Footer>
-              </Card>
+                </div>
+              </div>
             );
           })}
         </CardColumns>
       </Container>
-      <InfoModal
+      {/* <InfoModal
         show={show.InfoModal}
         handleClose={() => {
           setShow({ ...show, InfoModal: false });
         }}
         keywords={chosen.keywords}
-      ></InfoModal>
+      ></InfoModal> */}
       {role == "admin" ? (
         <>
           <AddModal
             show={show.addModal}
             device={chosen}
             addKeywords={() => {
-              getDevices();
+              //getDevices();
             }}
             handleClose={() => {
               setShow({ ...show, addModal: false });
