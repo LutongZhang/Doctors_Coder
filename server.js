@@ -25,11 +25,21 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 console.log(path.resolve(__dirname, "build"));
 app.use("/", express.static(path.resolve(__dirname, "build")));
-app.use((req, res, next) => {
+// app.use((req, res, next) => {
+//   if (req.url.startsWith("/api/")) {
+//     return next();
+//   }
+//   return res.sendFile(path.resolve(__dirname, "build/index.html"));
+// });
+
+app.get("*", function(req, res, next) {
+  console.log("url", req.url);
   if (req.url.startsWith("/api/")) {
     return next();
   }
-  return res.sendFile(path.resolve(__dirname, "build/index.html"));
+  const index = path.join(__dirname, "build", "index.html");
+  console.log(index);
+  res.sendFile(index);
 });
 
 app.use(function(req, res, next) {
