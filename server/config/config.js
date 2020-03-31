@@ -1,6 +1,6 @@
 const db = {
   uri:
-    "mongodb+srv://Lutong:1qsz2waxW!@cluster0-b4o6r.mongodb.net/test?retryWrites=true&w=majority"
+    "mongodb+srv://LTZ:uRshtwHwMFcouyUV@cluster0-b4o6r.mongodb.net/test?retryWrites=true&w=majority"
 };
 //node -e "console.log(require('crypto').randomBytes(32).toString('hex'));"
 
@@ -11,3 +11,5 @@ const config = {
 };
 
 module.exports = config;
+
+//uRshtwHwMFcouyUV;
