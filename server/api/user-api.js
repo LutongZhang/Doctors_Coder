@@ -251,10 +251,32 @@ Router.post("/changePassword", (req, res) => {
 
       User.findByIdAndUpdate(id, {password : hash})
       .then(User => {
-        sendEmail(req.body);
+        
+
+        const pwEmailTplt = PATH.resolve(
+          __dirname,
+          "../mailer/html-tplt/passwordChanged"
+        );
+
+        console.log("path", pwEmailTplt);
+        res.render(
+          pwEmailTplt,
+          { firstName: User.firstName },
+          (err, content) => {
+            if (err) {
+              console.error(err.stack);
+            }
+
+            const subject = "Password Changed Successfully!";
+            sendEmail(User, subject, content);
+            console.log(content);
+          }
+        );
+
         res.json({
          password: User.password
         });
+        
       }).catch(e => {
         res.status(400).json({ message: e });
       });
