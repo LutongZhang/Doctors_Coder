@@ -34,7 +34,7 @@ app.use("/", express.static(path.resolve(__dirname, "build")));
 
 app.get("*", function(req, res, next) {
   console.log("url", req.url);
-  if (req.url.startsWith("/api/")) {
+  if (req.url.startsWith("/api")) {
     return next();
   }
   const index = path.join(__dirname, "build", "index.html");
