@@ -11,3 +11,28 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.buttonOverlay {
+	position: absolute;
+	height: 50%;
+	width: 100%;
+	transition: .5s ease;
+	opacity: 0;
+	top: 25%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	-ms-transform: translate(-50%, -50%);
+	text-align: center;
+}
+.cardWrapper {
+	position: relative;
+	z-index: 2;
+}
+.cardWrapper:hover .buttonOverlay {
+	z-index: 999;
+	opacity: 1;
+}
+
+button {
+	margin: 5px;
+}

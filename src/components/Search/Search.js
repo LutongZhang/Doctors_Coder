@@ -1,5 +1,4 @@
 import React, { Component, useState, useEffect } from "react";
-import { Form } from "react-bootstrap";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
@@ -13,7 +12,9 @@ import {
   Button,
   InputGroup,
   Container,
-  Col
+  Col,
+  Dropdown,
+  Form
 } from "react-bootstrap";
 import AddModal from "../modal/addModal";
 // import InfoModal from "../modal/InfoModal";
@@ -111,18 +112,6 @@ const Search = props => {
     <div>
       {!isAuth ? <Redirect to="/login"></Redirect> : null}
 
-      {/* {adminshow} */}
-      {role == "admin" ? (
-        <Button
-          variant="success"
-          onClick={() => {
-            setShow({ ...show, NewDevModal: true });
-            console.log(show);
-          }}
-        >
-          Add New Device
-        </Button>
-      ) : null}
 
       <h2 style={{ textAlign: "center" }}>Search for devices</h2>
       <div
@@ -132,12 +121,9 @@ const Search = props => {
           justifyContent: "center"
         }}
       >
-        <Form.Row
-          style={{
-            width: "50%"
-          }}
-        >
-          <Form.Group as={Col}>
+	  <Form style={{ width: "50%" }}>
+        <Form.Row>
+          <Form.Group as={Col} md="8">
             <InputGroup>
               <InputGroup.Prepend>
                 <InputGroup.Text>
@@ -152,7 +138,22 @@ const Search = props => {
               />
             </InputGroup>
           </Form.Group>
+		  <Col md="4">
+	        {/* {adminshow} */}
+	        {role == "admin" ? (
+	          <Button
+	            variant="success"
+	            onClick={() => {
+	              setShow({ ...show, NewDevModal: true });
+	              console.log(show);
+			  }}
+	          >
+	            Add New Device
+	          </Button>
+	        ) : null}
+			</Col>
         </Form.Row>
+		</Form>
       </div>
       <br></br>
       <br></br>
@@ -162,18 +163,24 @@ const Search = props => {
         <CardColumns>
           {filtered.map((val, index) => {
             return (
+  	  		<div className="cardWrapper">
               <Card
-                style={{ width: "80%" }}
                 key={index}
                 className="text-center"
               >
                 <Card.Img variant="top" src={val.filePath} />
                 <Card.Body>
-                  <Card.Title>{val.name}</Card.Title>
-                  <strong>keywords:</strong>
-                  <Card.Text>{val.keywords.join(" / ")}</Card.Text>
+				  <Dropdown drop="up">
+					  <Dropdown.Toggle variant="success" id="dropdown-basic">
+					    {val.name}
+					  </Dropdown.Toggle>
+					  <Dropdown.Menu>
+					  {val.keywords.map(word => <Dropdown.Item href="#">{word}</Dropdown.Item>)}
+                  		</Dropdown.Menu>
+				  </Dropdown>
                 </Card.Body>
-                <Card.Footer>
+				</Card>
+                <div className="buttonOverlay">
                   {/* <Button
                     variant="outline-info"
                     onClick={() => {
@@ -224,8 +231,8 @@ const Search = props => {
                   >
                     Add
                   </Button> */}
-                </Card.Footer>
-              </Card>
+              </div>
+			  </div>
             );
           })}
         </CardColumns>

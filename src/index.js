@@ -8,6 +8,7 @@ import { Provider } from "react-redux";
 import { createStore, compose, applyMiddleware } from "redux";
 import thunk from "redux-thunk"; //for async in redux
 import reducers from "./reducers";
+import './index.css';
 
 const store = createStore(reducers, compose(applyMiddleware(thunk)));
 
