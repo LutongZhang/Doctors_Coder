@@ -41,7 +41,7 @@ class msg {
         style={{
           position: "fixed",
           left: "47%",
-          top: "20%"
+          top: "30%"
         }}
       >
         <span className="sr-only">Loading...</span>
