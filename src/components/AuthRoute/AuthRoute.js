@@ -10,10 +10,7 @@ import Navbar from "../Navbar/Navbar";
 import { withRouter, Redirect } from "react-router";
 import { authSuccess } from "../../redux/user.redux";
 import axios from "axios";
-
-const Home = () => {
-  return <div>HomePage</div>;
-};
+import HomePage from "../HomePage/Homepage";
 
 const NoMatch = props => {
   useEffect(() => {}, [props.isAuth]);
@@ -105,7 +102,7 @@ class AuthRoute extends Component {
         name: "Home",
         type: "home",
         path: "/",
-        component: Home,
+        component: HomePage,
         hide: false
       },
       {
