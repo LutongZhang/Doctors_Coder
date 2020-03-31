@@ -243,45 +243,57 @@ Router.post("/changePassword", (req, res) => {
   console.log("info:", Info);
   const id = Info.id;
 
-  bcrypt.genSalt(10, (err, salt) => {
-    if (err) throw err;
-    bcrypt.hash(req.body.new_password, salt, (err, hash) => {
-      if (err) throw err;
-      console.log(req.body.new_password);
+  User.findById(id).then(currUser => {
+  bcrypt.compare(req.body.old_password, currUser.password).then(isMatch => {
+    if(!isMatch)
+    {
+      return res.status(400).json({ message: "Incorrect Password" });
+    }
 
-      User.findByIdAndUpdate(id, {password : hash})
-      .then(User => {
-        
+      bcrypt.genSalt(10, (err, salt) => {
+        if (err) throw err;
+        bcrypt.hash(req.body.new_password, salt, (err, hash) => {
+          if (err) throw err;
+          console.log(req.body.new_password);
 
-        const pwEmailTplt = PATH.resolve(
-          __dirname,
-          "../mailer/html-tplt/passwordChanged"
-        );
+          User.findByIdAndUpdate(id, {password : hash})
+          .then(User => {
+            
 
-        console.log("path", pwEmailTplt);
-        res.render(
-          pwEmailTplt,
-          { firstName: User.firstName },
-          (err, content) => {
-            if (err) {
-              console.error(err.stack);
-            }
+            const pwEmailTplt = PATH.resolve(
+              __dirname,
+              "../mailer/html-tplt/passwordChanged"
+            );
 
-            const subject = "Password Changed Successfully!";
-            sendEmail(User, subject, content);
-            console.log(content);
-          }
-        );
+            console.log("path", pwEmailTplt);
+            res.render(
+              pwEmailTplt,
+              { firstName: User.firstName },
+              (err, content) => {
+                if (err) {
+                  console.error(err.stack);
+                }
 
-        res.json({
-         password: User.password
-        });
-        
-      }).catch(e => {
-        res.status(400).json({ message: e });
-      });
+                const subject = "Password Changed Successfully!";
+                sendEmail(User, subject, content);
+                console.log(content);
+              }
+            );          
+           
+            res.json({
+              userName: User.userName,
+              firstName: User.firstName,
+              lastName: User.lastName,
+              email: User.email
+            });
+            
+          }).catch(e => {
+            res.status(400).json({ message: e });
+          });
  
   });
+});
+});
 });
 });
 

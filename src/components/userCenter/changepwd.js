@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { change_password } from "../../redux/user.redux";
-import {Form, Col, Button} from "react-bootstrap"
+import {Formik, Form, Field, ErrorMessage} from 'formik'
+import {Modal, ModalBody} from 'react-bootstrap'
+import * as Yup from "yup"
 
-
-import axios from "axios";
 
 
 
@@ -13,14 +13,12 @@ const ChangePwd = props => {
   
   const dispatcher = useDispatch();
  
- 
-
   const [currForm, setForm] = useState({
     old_password: "",
     new_password: ""
   });
 
-  const formUpdate = e => {
+  const handleChange = e => {
     const target = e.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
@@ -37,56 +35,74 @@ const ChangePwd = props => {
     
   };
 
-  
-  
-  
-  
+ 
+ 
   
   
   
   return ( 
   
-  
-  <div class="text-center">
-   <h4 class="display-4">
-     Change Password
-   </h4>
-   <Form>
-          <Form.Group as={Col}>
-            <Form.Control
-              type="password"
-              name="old_password"
-              placeholder="Old Password"
-              value={currForm.old_password}
-              onChange={formUpdate}
-            ></Form.Control>
-           
-          </Form.Group>
-          {/* End of username form*/}
-          <Form.Group as={Col}>
-            <Form.Control
-              type="password"
-              name="new_password"
-              placeholder="New Password"
-              value={currForm.new_password}
-              onChange={formUpdate}
-            ></Form.Control>
-           
-          </Form.Group>
-          {/* End of password form*/}
-
-  
-
-   <Button type="submit" variant="outline-primary" onClick={handleSubmit}>
-            Submit
-          </Button>
-
-          </Form>
-
-  </div>
+  <Formik
+    initialValues={{new_password: ""}}
+    validationSchema={
+    Yup.object().shape({
+      old_password: Yup.string().required("Password is required."),
+      new_password: Yup.string().min(6, "New Password must be at least 6 characters.").required("New password is required.")
     
-            
+  })}
+  >  
+      {({ errors, status, touched }) => (
+       
+        <Form class="text-center"  onSubmit={handleSubmit} onChange={handleChange}>
+        <h3 className="display-4">Change Password</h3>
+        <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+        <div class="modal-body">
+        
+        <div htmlFor="old_password" className="col-xs-3 form-group">
+            <Field
+              name="old_password"
+              type="password"
+              placeholder="Old Password"
+              className={
+                "form-control" +
+                (errors.old_password && touched.old_password ? " is-invalid" : "")
+              }
+            />
+            <ErrorMessage
+              name="old_password"
+              component="div"
+              className="invalid-feedback"
+            />
+          </div>
+          <div htmlFor="new_password" className="form-group">
+            <Field
+              name="new_password"
+              type="password"
+              placeholder="New Password"
+              className={
+                "form-control" +
+                (errors.new_password && touched.new_password ? " is-invalid" : "")
+              }
+            />
+            <ErrorMessage
+              name="new_password"
+              component="div"
+              className="invalid-feedback"
+            />
+          </div>
+          <button type="submit" className="btn btn-secondary mr-2">
+              Submit
+          </button>
+          </div>
+          </div>
+          </div>
+        </Form>
+    )}
+  </Formik>  
+    
     );
-};
 
+
+};
 export default ChangePwd;

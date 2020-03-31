@@ -103,10 +103,13 @@ export const change_password = input => {
     return axios
       .post("api/user/changePassword", input)
       .then(res => {
-        console.log(res);
-       // dispatch(authSuccess(res.data));
+        dispatch(authSuccess(res.data));
         //loading kill
         msg.killLoading();
-      })
+      }).catch(err => {
+        msg.alert("danger", err.response.data);
+        //loading kill
+        msg.killLoading();
+      });
   };
 };
