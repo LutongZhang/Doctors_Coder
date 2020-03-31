@@ -41,6 +41,7 @@ const NewDevModal = props => {
           "Content-Type": "multipart/form-data"
         }
       });
+      window.location.reload();
     } catch (err) {
       console.log(err);
     }

@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("../config/config");
 const sendEmail = require("../mailer/emailFunctionality.js");
+
 const jwtDecode = require("jwt-decode");
 //User model
 const User = require("../models/user-model");
@@ -11,10 +12,10 @@ const User = require("../models/user-model");
 //Input validation
 const validateRegisterInput = require("../userValidation/register_validation");
 const validateLoginInput = require("../userValidation/login_validation");
+const PATH = require("path");
 
 const Router = express.Router();
 mongoose.connect(config.db.uri);
-
 
 Router.get("/info", (req, res) => {
   if (req.cookies.Bearer == null) {
@@ -64,6 +65,28 @@ Router.post("/register", (req, res) => {
             id: Userxx._id
           };
 
+          //eamil send
+          //sendEmail(req.body);
+          const regEmailTplt = PATH.resolve(
+            __dirname,
+            "../mailer/html-tplt/register"
+          );
+
+          console.log("path", regEmailTplt);
+          res.render(
+            regEmailTplt,
+            { firstName: req.body.firstName },
+            (err, content) => {
+              if (err) {
+                console.error(err.stack);
+              }
+
+              const subject = "Account Registered Successfully!";
+              sendEmail(req.body, subject, content);
+              console.log(content);
+            }
+          );
+          //
           jwt.sign(
             payload,
             process.env.secretOrKey || config.secretOrKey,
@@ -76,8 +99,7 @@ Router.post("/register", (req, res) => {
                 userName: Userxx.userName,
                 role: Userxx.role
               });
-              //eamil send
-              sendEmail(req.body);
+              //
             }
           );
           // res.json({ userName: Userxx.userName });
