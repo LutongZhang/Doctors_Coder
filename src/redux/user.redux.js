@@ -106,8 +106,10 @@ export const change_password = input => {
         dispatch(authSuccess(res.data));
         //loading kill
         msg.killLoading();
-      }).catch(err => {
-        msg.alert("danger", err.response.data);
+        msg.alert("success", "you password is successfully changed");
+      })
+      .catch(err => {
+        msg.alert("danger", err.response.data.message);
         //loading kill
         msg.killLoading();
       });
