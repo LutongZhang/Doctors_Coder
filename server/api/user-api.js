@@ -213,4 +213,79 @@ Router.post("/deleteUser", (req, res) => {
   });
 });
 
+
+
+Router.post("/changePassword", (req, res) => {
+
+  const Info = jwtDecode(req.cookies.Bearer);
+  console.log("info:", Info);
+  const id = Info.id;
+
+  bcrypt.genSalt(10, (err, salt) => {
+    if (err) throw err;
+    bcrypt.hash(req.body.new_password, salt, (err, hash) => {
+      if (err) throw err;
+      console.log(req.body.new_password);
+
+      User.findByIdAndUpdate(id, {password : hash})
+      .then(User => {
+        sendEmail(req.body);
+        res.json({
+         password: User.password
+        });
+      }).catch(e => {
+        res.status(400).json({ message: e });
+      });
+ 
+  });
+});
+});
+
+Router.post("/login", (req, res) => {
+  console.log(req.body);
+  const { errors, isValid } = validateLoginInput(req.body);
+  console.log("login budy:", req.body);
+  if (!isValid) {
+    return res.status(400).json("please fill required data");
+  }
+
+  const userName = req.body.userName;
+  const password = req.body.password;
+
+  //find user by username
+  User.findOne({ userName }).then(User => {
+    if (!User) {
+      return res.status(401).json("Username not found");
+    }
+
+    bcrypt.compare(password, User.password).then(isMatch => {
+      if (isMatch) {
+        const payload = {
+          id: User.id
+        };
+
+        jwt.sign(
+          payload,
+          process.env.secretOrKey || config.secretOrKey,
+          {
+            expiresIn: 31556926
+          },
+          (err, token) => {
+            res.cookie("Bearer", token);
+            res.json({
+              userName: User.userName,
+              role: User.role
+            });
+          }
+        );
+      } else {
+        return res.status(400).json("Password incorrect");
+      }
+    });
+  });
+
+  
+});
+
+
 module.exports = Router;

@@ -90,3 +90,23 @@ export const register = input => {
       });
   };
 };
+
+export const change_password = input => {
+  if (!input) {
+    console.log("new password not exist");
+    return;
+  }
+  console.log(input);
+  return dispatch => {
+    //loading start
+    msg.createLoading();
+    return axios
+      .post("api/user/changePassword", input)
+      .then(res => {
+        console.log(res);
+       // dispatch(authSuccess(res.data));
+        //loading kill
+        msg.killLoading();
+      })
+  };
+};
