@@ -23,12 +23,22 @@ app.set("view engine", "html");
 app.engine("html", hbs.__express);
 app.use(cookieParser());
 app.use(bodyParser.json());
-app.use("/", express.static(path.resolve("build")));
-app.use((req, res, next) => {
-  if (req.url.startsWith("/api/")) {
+console.log(path.resolve(__dirname, "build"));
+app.use("/", express.static(path.resolve(__dirname, "build")));
+// app.use((req, res, next) => {
+//   if (req.url.startsWith("/api/")) {
+//     return next();
+//   }
+//   return res.sendFile(path.resolve(__dirname, "build/index.html"));
+// });
+
+app.get("*", function(req, res, next) {
+  if (req.url.startsWith("/api")) {
     return next();
   }
-  return res.sendFile(path.resolve("build/index.html"));
+  const index = path.join(__dirname, "build", "index.html");
+  console.log(index);
+  res.sendFile(index);
 });
 
 app.use(function(req, res, next) {

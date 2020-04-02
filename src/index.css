@@ -40,7 +40,7 @@ button {
   position: relative;
   top: 1px;
 }
-.startStopButton{
-  position: relative;
-  background: white left no-repeat;
-} */
+.cardWrapper:active .buttonOverlay {
+  z-index: 999;
+  opacity: 1;
+}
