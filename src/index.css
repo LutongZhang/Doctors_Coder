@@ -12,32 +12,12 @@ code {
     monospace;
 }
 
-.buttonOverlay {
-  position: absolute;
-  height: 50%;
-  width: 100%;
-  transition: 0.5s ease;
-  opacity: 0;
-  top: 25%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
-  text-align: center;
-}
-.cardWrapper {
-  position: relative;
-  z-index: 2;
-}
-.cardWrapper:hover .buttonOverlay {
-  z-index: 999;
-  opacity: 1;
-}
-
 button {
-  margin: 5px;
+  margin-left: 1px;
+  margin-right: 1px;
 }
 /* button */
-.addDeviceButton {
+/* .addDeviceButton {
   box-shadow: 3px 4px 0px 0px #8a2a21;
   background: linear-gradient(to bottom, #c62d1f 5%, #f24437 100%);
   background-color: #c62d1f;

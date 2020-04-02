@@ -23,8 +23,13 @@ import AddModal from "../modal/addModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTrash, faSearch } from "@fortawesome/free-solid-svg-icons";
 import msg from "../../message";
+var VSR = require('voice-speech-recognition');
+var recognizer = VSR.voiceSpeechRecognition();
+
 
 const Search = props => {
+  const [buttonName, setButton] = useState('Start Speech Recognition');
+  const [transcript, setTranscript] = useState('');
   const user = useSelector(state => state.user);
   const { isAuth, role } = user;
   const [keyWords, setKeyWords] = useState("");
@@ -113,15 +118,12 @@ const Search = props => {
   return (
     <div>
       {!isAuth ? <Redirect to="/login"></Redirect> : null}
-
       <h2 style={{ textAlign: "center" }}>Search for devices</h2>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
+
+		<div
+		  className="form-row text-center"
+		  style={{ display: "flex", justifyContent: "center" }}
+		>
         <Form style={{ width: "50%" }}>
           <Form.Group md="8">
             <InputGroup>
@@ -137,31 +139,39 @@ const Search = props => {
                 placeholder="Search here.."
               />
             </InputGroup>
-          </Form.Group>
+  		  </Form.Group>
+
+  		<Button className="startStopButton"
+  		  variant="success"
+  		  onClick={() => {
+  		  if(!recognizer.isRecognizing){
+  			recognizer.resetRecognition();
+  			recognizer.startRecognition();
+  			console.log("voice recognition started");
+  			setButton('Stop Speech Recognition');
+  		  }else if(recognizer.isRecognizing){
+  			recognizer.stopRecognition();
+  			console.log("voice recognition stopped");
+  			console.log(recognizer.lastRecognizing);
+  			setButton('Start Speech Recognition');
+  			setTranscript(recognizer.lastRecognizing);
+  			setKeyWords(recognizer.lastRecognizing);
+  		  }
+  	  }}>{buttonName}</Button>
+  		{/* {adminshow} */}
+  		{role == "admin" ? (
+  		  <Button
+  			variant="success"
+  			onClick={() => {
+  			  setShow({ ...show, NewDevModal: true });
+  			  console.log(show);
+  			}}
+  			className="addDeviceButton"
+  		  >
+  			Add New Device
+  		  </Button>
+  		) : null}
         </Form>
-      </div>
-      <br></br>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
-        {/* {adminshow} */}
-        {role == "admin" ? (
-          <Button
-            variant="success"
-            onClick={() => {
-              setShow({ ...show, NewDevModal: true });
-              console.log(show);
-            }}
-            className="addDeviceButton"
-            size="lg"
-          >
-            Add New Device
-          </Button>
-        ) : null}
       </div>
       <br></br>
       <br></br>
