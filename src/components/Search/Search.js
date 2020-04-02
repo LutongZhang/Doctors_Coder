@@ -179,8 +179,7 @@ const Search = props => {
                   		</Dropdown.Menu>
 				  </Dropdown>
                 </Card.Body>
-				</Card>
-                <div className="buttonOverlay">
+				<Card.Footer>
                   {/* <Button
                     variant="outline-info"
                     onClick={() => {
@@ -231,7 +230,8 @@ const Search = props => {
                   >
                     Add
                   </Button> */}
-              </div>
+              </Card.Footer>
+			  </Card>
 			  </div>
             );
           })}
