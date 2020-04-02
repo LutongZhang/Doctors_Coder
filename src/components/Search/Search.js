@@ -21,8 +21,13 @@ import AddModal from "../modal/addModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import msg from "../../message";
+var VSR = require('voice-speech-recognition');
+var recognizer = VSR.voiceSpeechRecognition();
+
 
 const Search = props => {
+  const [buttonName, setButton] = useState('Start Speech Recognition');
+  const [transcript, setTranscript] = useState('');
   const user = useSelector(state => state.user);
   const { isAuth, role } = user;
   const [keyWords, setKeyWords] = useState("");
@@ -111,7 +116,6 @@ const Search = props => {
   return (
     <div>
       {!isAuth ? <Redirect to="/login"></Redirect> : null}
-
       <h2 style={{ textAlign: "center" }}>Search for devices</h2>
       <div
         style={{
@@ -137,6 +141,21 @@ const Search = props => {
             </InputGroup>
           </Form.Group>
         </Form>
+        <button className="startStopButton" onClick={() => {
+          if(!recognizer.isRecognizing){
+            recognizer.resetRecognition();
+            recognizer.startRecognition();
+            console.log("voice recognition started");
+            setButton('Stop Speech Recognition');
+          }else if(recognizer.isRecognizing){
+            recognizer.stopRecognition();
+            console.log("voice recognition stopped");
+            console.log(recognizer.lastRecognizing);
+            setButton('Start Speech Recognition');
+            setTranscript(recognizer.lastRecognizing);
+            setKeyWords(recognizer.lastRecognizing);
+          }
+          }}>{buttonName}</button>
       </div>
       <br></br>
       <div
