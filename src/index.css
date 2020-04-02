@@ -28,11 +28,7 @@ code {
 	position: relative;
 	z-index: 2;
 }
-.cardWrapper:hover .buttonOverlay {
+.cardWrapper:active .buttonOverlay {
 	z-index: 999;
 	opacity: 1;
-}
-
-button {
-	margin: 5px;
 }

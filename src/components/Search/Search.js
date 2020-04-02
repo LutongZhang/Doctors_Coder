@@ -13,13 +13,15 @@ import {
   InputGroup,
   Container,
   Col,
+  Row,
   Dropdown,
-  Form
+  Form,
+  ButtonGroup
 } from "react-bootstrap";
 import AddModal from "../modal/addModal";
 // import InfoModal from "../modal/InfoModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faTrash, faSearch } from "@fortawesome/free-solid-svg-icons";
 import msg from "../../message";
 
 const Search = props => {
@@ -138,7 +140,7 @@ const Search = props => {
               />
             </InputGroup>
           </Form.Group>
-		  <Col md="4">
+		  <Form.Group as={Col} md="4">
 	        {/* {adminshow} */}
 	        {role == "admin" ? (
 	          <Button
@@ -151,7 +153,7 @@ const Search = props => {
 	            Add New Device
 	          </Button>
 	        ) : null}
-			</Col>
+			</Form.Group>
         </Form.Row>
 		</Form>
       </div>
@@ -163,76 +165,61 @@ const Search = props => {
         <CardColumns>
           {filtered.map((val, index) => {
             return (
-  	  		<div className="cardWrapper">
               <Card
                 key={index}
                 className="text-center"
               >
                 <Card.Img variant="top" src={val.filePath} />
                 <Card.Body>
+				<div className="form-row text-center">
+				<Col>
+				<Button
+				  variant="primary"
+				  onClick={() => {
+					Timer(val.name, user);
+				  }}
+				>
+				  Checkout
+				</Button>
+				</Col>
+				<Col>
 				  <Dropdown drop="up">
 					  <Dropdown.Toggle variant="success" id="dropdown-basic">
 					    {val.name}
 					  </Dropdown.Toggle>
 					  <Dropdown.Menu>
 					  {val.keywords.map(word => <Dropdown.Item href="#">{word}</Dropdown.Item>)}
+				      {role == "admin" ? (
+				        <>
+							<Dropdown.Item
+	                        onClick={() => {
+	                          setChosen(val);
+	                          setShow({ ...show, addModal: true });
+	                          console.log(show);
+						  }}><FontAwesomeIcon icon={faPlus} /> Add Keyword </Dropdown.Item>
+				        </>
+				      ) : null}
                   		</Dropdown.Menu>
 				  </Dropdown>
-                </Card.Body>
-				<Card.Footer>
-                  {/* <Button
-                    variant="outline-info"
-                    onClick={() => {
-                      setChosen(val);
-                      setShow({ ...show, InfoModal: true });
-                    }}
-                  >
-                    Info
-                  </Button> */}
-                  <Button
-                    variant="outline-primary"
-                    onClick={() => {
-                      Timer(val.name, user);
-                    }}
-                  >
-                    Checkout
-                  </Button>
+				  </Col>
                   {role == "admin" ? (
                     <>
+					<Col>
                       <Button
-                        variant="outline-dark"
-                        onClick={() => {
-                          setChosen(val);
-                          setShow({ ...show, addModal: true });
-                          console.log(show);
-                        }}
-                      >
-                        AddKey
-                      </Button>
-                      <Button
-                        variant="outline-danger"
+                        variant="danger"
                         onClick={() => {
                           setChosen(val);
                           deleteDevice(val._id);
                         }}
                       >
-                        Delete
+	                    <FontAwesomeIcon icon={faTrash} />
                       </Button>
+					  </Col>
                     </>
                   ) : null}
-                  {/* <Button
-                    variant="outline-dark"
-                    onClick={() => {
-                      setChosen(val);
-                      setShow({ ...show, addModal: true });
-                      console.log(show);
-                    }}
-                  >
-                    Add
-                  </Button> */}
-              </Card.Footer>
-			  </Card>
-			  </div>
+				  </div>
+                </Card.Body>
+				</Card>
             );
           })}
         </CardColumns>
