@@ -60,3 +60,7 @@ button {
   position: relative;
   top: 1px;
 }
+.cardWrapper:active .buttonOverlay {
+  z-index: 999;
+  opacity: 1;
+}
