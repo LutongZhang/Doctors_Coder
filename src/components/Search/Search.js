@@ -13,13 +13,15 @@ import {
   InputGroup,
   Container,
   Col,
+  Row,
   Dropdown,
-  Form
+  Form,
+  ButtonGroup
 } from "react-bootstrap";
 import AddModal from "../modal/addModal";
 // import InfoModal from "../modal/InfoModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faTrash, faSearch } from "@fortawesome/free-solid-svg-icons";
 import msg from "../../message";
 var VSR = require('voice-speech-recognition');
 var recognizer = VSR.voiceSpeechRecognition();
@@ -117,13 +119,11 @@ const Search = props => {
     <div>
       {!isAuth ? <Redirect to="/login"></Redirect> : null}
       <h2 style={{ textAlign: "center" }}>Search for devices</h2>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
+
+		<div
+		  className="form-row text-center"
+		  style={{ display: "flex", justifyContent: "center" }}
+		>
         <Form style={{ width: "50%" }}>
           <Form.Group md="8">
             <InputGroup>
@@ -139,46 +139,39 @@ const Search = props => {
                 placeholder="Search here.."
               />
             </InputGroup>
-          </Form.Group>
+  		  </Form.Group>
+
+  		<Button className="startStopButton"
+  		  variant="success"
+  		  onClick={() => {
+  		  if(!recognizer.isRecognizing){
+  			recognizer.resetRecognition();
+  			recognizer.startRecognition();
+  			console.log("voice recognition started");
+  			setButton('Stop Speech Recognition');
+  		  }else if(recognizer.isRecognizing){
+  			recognizer.stopRecognition();
+  			console.log("voice recognition stopped");
+  			console.log(recognizer.lastRecognizing);
+  			setButton('Start Speech Recognition');
+  			setTranscript(recognizer.lastRecognizing);
+  			setKeyWords(recognizer.lastRecognizing);
+  		  }
+  	  }}>{buttonName}</Button>
+  		{/* {adminshow} */}
+  		{role == "admin" ? (
+  		  <Button
+  			variant="success"
+  			onClick={() => {
+  			  setShow({ ...show, NewDevModal: true });
+  			  console.log(show);
+  			}}
+  			className="addDeviceButton"
+  		  >
+  			Add New Device
+  		  </Button>
+  		) : null}
         </Form>
-        <button className="startStopButton" onClick={() => {
-          if(!recognizer.isRecognizing){
-            recognizer.resetRecognition();
-            recognizer.startRecognition();
-            console.log("voice recognition started");
-            setButton('Stop Speech Recognition');
-          }else if(recognizer.isRecognizing){
-            recognizer.stopRecognition();
-            console.log("voice recognition stopped");
-            console.log(recognizer.lastRecognizing);
-            setButton('Start Speech Recognition');
-            setTranscript(recognizer.lastRecognizing);
-            setKeyWords(recognizer.lastRecognizing);
-          }
-          }}>{buttonName}</button>
-      </div>
-      <br></br>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
-        {/* {adminshow} */}
-        {role == "admin" ? (
-          <Button
-            variant="success"
-            onClick={() => {
-              setShow({ ...show, NewDevModal: true });
-              console.log(show);
-            }}
-            className="addDeviceButton"
-            size="lg"
-          >
-            Add New Device
-          </Button>
-        ) : null}
       </div>
       <br></br>
       <br></br>
@@ -187,21 +180,33 @@ const Search = props => {
         <CardColumns>
           {filtered.map((val, index) => {
             return (
-              <div className="cardWrapper" key={index}>
-                <Card className="text-center">
-                  <Card.Img
-                    variant="top"
-                    style={{
-                      width: "60%",
-                      height: "150px"
-                      //maxHeight: "auto",
-                      //float: "left",
-                      // margin: "3px",
-                      // padding: "3px"
-                    }}
-                    src={val.filePath}
-                  />
-                  <Card.Body>
+              <Card key={index} className="text-center">
+                <Card.Img
+                  variant="top"
+                  style={{
+                    width: "80%",
+                    height: "150px"
+                    //maxHeight: "auto",
+                    //float: "left",
+                    // margin: "3px",
+                    // padding: "3px"
+                  }}
+                  src={val.filePath}
+                />
+                <Card.Body>
+                  <div
+                    className="form-row text-center"
+                    style={{ display: "flex", justifyContent: "center" }}
+                  >
+                    <Button
+                      variant="primary"
+                      onClick={() => {
+                        Timer(val.name, user);
+                      }}
+                    >
+                      Checkout
+                    </Button>
+
                     <Dropdown drop="up">
                       <Dropdown.Toggle variant="success" id="dropdown-basic">
                         {val.name}
@@ -212,63 +217,36 @@ const Search = props => {
                             {word}
                           </Dropdown.Item>
                         ))}
+                        {role == "admin" ? (
+                          <>
+                            <Dropdown.Item
+                              onClick={() => {
+                                setChosen(val);
+                                setShow({ ...show, addModal: true });
+                                console.log(show);
+                              }}
+                            >
+                              <FontAwesomeIcon icon={faPlus} /> Add Keyword{" "}
+                            </Dropdown.Item>
+                          </>
+                        ) : null}
                       </Dropdown.Menu>
                     </Dropdown>
-                  </Card.Body>
-                </Card>
-                <div className="buttonOverlay">
-                  {/* <Button
-                    variant="outline-info"
-                    onClick={() => {
-                      setChosen(val);
-                      setShow({ ...show, InfoModal: true });
-                    }}
-                  >
-                    Info
-                  </Button> */}
-                  <Button
-                    variant="outline-primary"
-                    onClick={() => {
-                      Timer(val.name, user);
-                    }}
-                  >
-                    Checkout
-                  </Button>
-                  {role == "admin" ? (
-                    <>
+
+                    {role == "admin" ? (
                       <Button
-                        variant="outline-dark"
-                        onClick={() => {
-                          setChosen(val);
-                          setShow({ ...show, addModal: true });
-                          console.log(show);
-                        }}
-                      >
-                        AddKey
-                      </Button>
-                      <Button
-                        variant="outline-danger"
+                        variant="danger"
                         onClick={() => {
                           setChosen(val);
                           deleteDevice(val._id);
                         }}
                       >
-                        Delete
+                        <FontAwesomeIcon icon={faTrash} />
                       </Button>
-                    </>
-                  ) : null}
-                  {/* <Button
-                    variant="outline-dark"
-                    onClick={() => {
-                      setChosen(val);
-                      setShow({ ...show, addModal: true });
-                      console.log(show);
-                    }}
-                  >
-                    Add
-                  </Button> */}
-                </div>
-              </div>
+                    ) : null}
+                  </div>
+                </Card.Body>
+              </Card>
             );
           })}
         </CardColumns>
