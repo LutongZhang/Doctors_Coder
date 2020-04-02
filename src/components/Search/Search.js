@@ -199,8 +199,10 @@ const Search = props => {
                         {val.name}
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
-                        {val.keywords.map(word => (
-                          <Dropdown.Item href="#">{word}</Dropdown.Item>
+                        {val.keywords.map((word, i) => (
+                          <Dropdown.Item href="#" key={i}>
+                            {word}
+                          </Dropdown.Item>
                         ))}
                         {role == "admin" ? (
                           <>
