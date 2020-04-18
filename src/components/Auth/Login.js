@@ -68,7 +68,14 @@ const Login = props => {
         </Modal.Body>
 
         <Modal.Footer>
-          <Button variant="outline-primary" onClick={handleLogin}>
+          <Button variant="primary" 
+          style={{ 
+                 bottom: "20px",
+                 background: "#09c",
+                 color: "#fff",
+                 fontFamily: "tahoma,geneva,algerian",
+                 border: "1px solid #999",}} 
+          onClick={handleLogin}>
             Submit
           </Button>
         </Modal.Footer>
