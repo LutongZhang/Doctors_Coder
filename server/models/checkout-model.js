@@ -19,7 +19,7 @@ const userModel = new Schema({
   },
   checkinTime: {
     type: String,
-    required: true,
+    required: false,
   }
 });
 
