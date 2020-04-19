@@ -24,10 +24,11 @@ const Profile = props => {
   const { isAuth, role } = user;
 
   const getUserCheckout = () => {
+	  console.log("clicked!");
     axios
       .post("/api/checkout/getUserCheckout", { userName: user.userName })
       .then(res => {
-        setCheckedOut(res.data);
+        setCheckedOut(res.data.reverse());
       })
       .catch(err => {});
   };
@@ -36,8 +37,7 @@ const Profile = props => {
     axios
       .post("/api/checkout/getUserCheckout", { userName: user.userName })
       .then(res => {
-        setCheckedOutAdmin(res.data);
-        console.log(res.data);
+        setCheckedOutAdmin(res.data.reverse());
       })
       .catch(err => {});
   };
@@ -73,24 +73,58 @@ const Profile = props => {
     setTable(1);
   }
 
+  const checkIn = checkedOut => {
+
+
+    axios
+      .post("/api/checkout/checkIn", { checkedOut: checkedOut })
+      .then(res => {
+	  getUserCheckout();
+
+        //getDevices();
+      })
+      .catch(err => {
+        console.log(err.response.message);
+      });
+	
+
+  };
 
   const list = checkedOut.map(checkedOut => {
+	  
+
+  if(checkedOut.checkinTime==null){
     return (
       <tr>
-        <td>
-          {" "}
-          <b>{checkedOut.userName} </b>
-        </td>
+       
         <td>
           {" "}
           <i>{checkedOut.device}</i>{" "}
         </td>
         <td> {checkedOut.checkoutTime} </td>
+		
+		<td bgcolor><Button onClick = {()=>{checkIn(checkedOut);}} style = {{backgroundColor: "green"}}>Check in</Button></td>
       </tr>
-    );
+);}
+else{
+	return (
+      <tr>
+        
+        <td>
+          {" "}
+          <i>{checkedOut.device}</i>{" "}
+        </td>
+        <td> {checkedOut.checkoutTime} </td>
+		
+		<td bgcolor = "green">{checkedOut.checkinTime}</td>
+      </tr>
+);
+	
+}
   });
 
   const adminList = checkedOutAdmin.map(checkedOut => {
+     if(checkedOut.checkinTime==null){
     return (
       <tr>
         <td>
@@ -102,8 +136,28 @@ const Profile = props => {
           <i>{checkedOut.device}</i>{" "}
         </td>
         <td> {checkedOut.checkoutTime} </td>
+		
+		<td>Not checked in.  </td>
       </tr>
-    );
+);}
+else{
+	return (
+      <tr>
+        <td>
+          {" "}
+          <b>{checkedOut.userName} </b>
+        </td>
+        <td>
+          {" "}
+          <i>{checkedOut.device}</i>{" "}
+        </td>
+        <td> {checkedOut.checkoutTime} </td>
+		
+		<td bgcolor = "green">{checkedOut.checkinTime}</td>
+      </tr>
+);
+	
+}
   });
 
   const userListing = userList.map(users => {
@@ -131,7 +185,10 @@ const Profile = props => {
         <h1>{user.userName}'s Profile Page</h1>
         <Table striped bordered hover variant="dark" style={tableStyle}>
           <thead>
-            <tr><h4>User Checkout Times</h4><i>(If none are listed, no checkouts have been made)</i></tr>
+            <tr><h4>Your check-outs</h4><i>(If none are listed, no checkouts have been made)</i></tr>
+              <th><h5>Device</h5></th>
+              <th><h5>Check-out time</h5></th>
+			   <th><h5>Check-in time</h5></th>
           </thead>
           <tbody>
             {list}
@@ -181,7 +238,8 @@ const Profile = props => {
             <tr>
               <th><h4>User Checkout Times</h4><i>(If none are listed, no checkouts have been made)</i></th>
               <th><h5>Device</h5></th>
-              <th><h5>Time of Checkout</h5></th>
+              <th><h5>Check-out time</h5></th>
+			   <th><h5>Check-in time</h5></th>
             </tr>
           </thead>
           <tbody>
