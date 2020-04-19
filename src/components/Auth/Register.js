@@ -158,7 +158,16 @@ const Register = props => {
             </div>
           </div>
           <div className="form-group">
-            <button type="submit" className="btn btn-primary mr-2">
+            <button type="submit"
+            style={{ 
+              bottom: "20px",
+              background: "#09c",
+              color: "#fff",
+              fontFamily: "tahoma,geneva,algerian",
+              border: "1px solid #999",
+            }} 
+            className="btn btn-primary mr-2"
+            >
               Register
             </button>
             <button type="reset" className="btn btn-secondary">

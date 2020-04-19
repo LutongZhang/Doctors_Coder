@@ -23,11 +23,12 @@ import AddModal from "../modal/addModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTrash, faSearch } from "@fortawesome/free-solid-svg-icons";
 import msg from "../../message";
-var VSR = require('voice-speech-recognition');
-var recognizer = VSR.voiceSpeechRecognition();
+const VSR = require('voice-speech-recognition');
+const recognizer = VSR.voiceSpeechRecognition();
 
 
 const Search = props => {
+  const [searchPlaceHolser,setSearchPH] = useState("Search here..")
   const [buttonName, setButton] = useState('Start Speech Recognition');
   const [transcript, setTranscript] = useState('');
   const user = useSelector(state => state.user);
@@ -136,12 +137,35 @@ const Search = props => {
                 value={keyWords}
                 onChange={handleChange}
                 type="text"
-                placeholder="Search here.."
+                placeholder={searchPlaceHolser}
+                
               />
+              <br/>
+              {/* <i class="fa fa-microphone" style={{fontSize:"36px"}}></i> */}
+              <div id="fakebox-microphone" class="microphone-icon mouse-navigation" title="Search by voice"
+              onClick={() => {
+                if(!recognizer.isRecognizing){
+                recognizer.resetRecognition();
+                recognizer.startRecognition();
+                console.log("voice recognition started");
+                setKeyWords("")
+                setSearchPH("please talk..")
+                setButton('Stop Speech Recognition');
+                }else if(recognizer.isRecognizing){
+                recognizer.stopRecognition();
+                console.log("voice recognition stopped");
+                console.log(recognizer.lastRecognizing);
+                setSearchPH("Search here")
+                setButton('Start Speech Recognition');
+                setTranscript(recognizer.lastRecognizing);
+                setKeyWords(recognizer.lastRecognizing);
+                }
+              }}
+              ></div>
             </InputGroup>
   		  </Form.Group>
 
-  		<Button className="startStopButton"
+  		{/* <Button className="startStopButton"
   		  variant="success"
   		  onClick={() => {
   		  if(!recognizer.isRecognizing){
@@ -157,7 +181,7 @@ const Search = props => {
   			setTranscript(recognizer.lastRecognizing);
   			setKeyWords(recognizer.lastRecognizing);
   		  }
-  	  }}>{buttonName}</Button>
+  	  }}>{buttonName}</Button> */}
   		{/* {adminshow} */}
   		{role == "admin" ? (
   		  <Button
@@ -185,10 +209,10 @@ const Search = props => {
                   variant="top"
                   style={{
                     width: "80%",
-                    height: "150px"
+                    height: "150px",
                     //maxHeight: "auto",
                     //float: "left",
-                    // margin: "3px",
+                    margin: "auto",
                     // padding: "3px"
                   }}
                   src={val.filePath}

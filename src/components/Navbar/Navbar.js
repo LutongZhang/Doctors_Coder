@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
-import { Dropdown, DropdownButton } from "react-bootstrap";
+import { Dropdown, DropdownButton,Navbar } from "react-bootstrap";
 import { connect } from "react-redux";
 import { logOut } from "../../redux/user.redux";
 
-class Navbar extends Component {
+class Nav extends Component {
   constructor(props) {
     super(props);
   }
@@ -15,7 +15,8 @@ class Navbar extends Component {
     const list = this.props.navList.filter(element => element.hide === false);
     return (
       <div>
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <Navbar className="navbar navbar-expand-lg navbar-light bg-light">
+        <Navbar.Collapse id="basic-navbar-nav">
           <Link className="navbar-brand" to="/">
             {list[0].name}
           </Link>
@@ -62,6 +63,7 @@ class Navbar extends Component {
                     return (
                       <div key={element.name}>
                         <DropdownButton
+                        variant="info"
                           alignRight
                           title={this.props.user.userName}
                           id="dropdown-menu-align-right"
@@ -99,10 +101,11 @@ class Navbar extends Component {
                 })}
             </ul>
           </div>
-        </nav>
+          </Navbar.Collapse>
+        </Navbar>
       </div>
     );
   }
 }
 
-export default connect(state => state)(Navbar);
+export default connect(state => state)(Nav);
