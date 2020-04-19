@@ -75,7 +75,7 @@ const Profile = props => {
 
   const checkIn = checkedOut => {
 
-
+    console.log('checkout:',checkedOut)
     axios
       .post("/api/checkout/checkIn", { checkedOut: checkedOut })
       .then(res => {

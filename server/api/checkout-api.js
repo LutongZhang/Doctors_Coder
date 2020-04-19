@@ -42,16 +42,15 @@ var date = new Date();
     ":" +
     min + " "
 	+ ampm;
-   Checkout1.findOne({ _id: req.body.checkedOut._id}, function(err, found) {
+   Checkout1.findOneAndUpdate({ _id: req.body.checkedOut._id},{checkinTime:date} ,function(err, found) {
     if (err) {
 	res.end("error");}
     else {
-		found.checkinTime = date;
-		found.save();
+		// found.checkinTime = date;
+    // found.save();
+    res.send("checkin time update")
     }
   });
-
-  res.end();
 });
 
 module.exports = Router;

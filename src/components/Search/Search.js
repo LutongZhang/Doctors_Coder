@@ -148,6 +148,7 @@ const Search = props => {
                 recognizer.resetRecognition();
                 recognizer.startRecognition();
                 console.log("voice recognition started");
+                setKeyWords("")
                 setSearchPH("please talk..")
                 setButton('Stop Speech Recognition');
                 }else if(recognizer.isRecognizing){
