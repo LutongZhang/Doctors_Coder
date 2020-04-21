@@ -223,7 +223,7 @@ const Search = props => {
                     style={{ display: "flex", justifyContent: "center" }}
                   >
                     <Button
-                      variant="primary"
+                      variant="success"
                       onClick={() => {
                         Timer(val.name, user);
                       }}
@@ -232,7 +232,7 @@ const Search = props => {
                     </Button>
 
                     <Dropdown drop="up">
-                      <Dropdown.Toggle variant="success" id="dropdown-basic">
+                      <Dropdown.Toggle variant="info" id="dropdown-basic">
                         {val.name}
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
