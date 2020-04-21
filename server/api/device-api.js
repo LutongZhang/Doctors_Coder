@@ -171,7 +171,7 @@ Router.post("/deleteDevice", (req, res) => {
       return res.status(400).json({ message: "id is required" });
     }
 
-    console.log("deviceID:", req.body.deviceId);
+  
 
     Device.findByIdAndDelete(req.body.deviceId, (err, device) => {
       if (err) {
