@@ -25,7 +25,7 @@ Router.post("/getUserCheckout", (req, res) => {
 });
 
 Router.post("/checkIn", (req, res) => {
-var date = new Date();
+  var date = new Date();
   var hours = date.getHours()>=13?date.getHours()-12:date.getHours();
   var ampm = date.getHours() >= 12 ? "PM" : "AM";
   var min =
