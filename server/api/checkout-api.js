@@ -25,24 +25,8 @@ Router.post("/getUserCheckout", (req, res) => {
 });
 
 Router.post("/checkIn", (req, res) => {
-  var date = new Date();
-  var hours = date.getHours()>=13?date.getHours()-12:date.getHours();
-  var ampm = date.getHours() >= 12 ? "PM" : "AM";
-  var min =
-    date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
-  date =
-    date.getMonth() +
-    1 +
-    "/" +
-    date.getDate() +
-    "/" +
-    date.getFullYear() +
-    " " +
-    hours +
-    ":" +
-    min + " "
-	+ ampm;
-   Checkout1.findOneAndUpdate({ _id: req.body.checkedOut._id},{checkinTime:date} ,function(err, found) {
+  console.log("suss")
+   Checkout1.findOneAndUpdate({ _id: req.body.checkedOut._id},{checkinTime:req.body.checkedOut.checkinTime} ,function(err, found) {
     if (err) {
 	res.end("error");}
     else {

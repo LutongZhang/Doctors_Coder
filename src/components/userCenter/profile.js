@@ -74,7 +74,24 @@ const Profile = props => {
   }
 
   const checkIn = checkedOut => {
-
+    var date = new Date();
+  var hours = date.getHours()>=13?date.getHours()-12:date.getHours();
+  var ampm = date.getHours() >= 12 ? "PM" : "AM";
+  var min =
+    date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+  date =
+    date.getMonth() +
+    1 +
+    "/" +
+    date.getDate() +
+    "/" +
+    date.getFullYear() +
+    " " +
+    hours +
+    ":" +
+    min + " "
+  + ampm;
+  checkedOut.checkinTime = date
     console.log('checkout:',checkedOut)
     axios
       .post("/api/checkout/checkIn", { checkedOut: checkedOut })
