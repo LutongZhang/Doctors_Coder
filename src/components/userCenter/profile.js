@@ -236,7 +236,7 @@ else{
         <Table striped bordered hover variant="dark" style={tableStyle}> 
           <thead>
             <tr>
-              <th><h4>User Checkout Times</h4><i>(If none are listed, no checkouts have been made)</i></th>
+              <th><h4>{userData.userName}'s check-outs</h4><i>(If none are listed, no checkouts have been made)</i></th>
               <th><h5>Device</h5></th>
               <th><h5>Check-out time</h5></th>
 			   <th><h5>Check-in time</h5></th>
