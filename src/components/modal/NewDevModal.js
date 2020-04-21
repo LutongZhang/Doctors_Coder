@@ -10,6 +10,10 @@ const NewDevModal = props => {
 
   const onChange = e => {
     const file = e.target.files[0];
+    if (file == null){
+      console.log(file)
+      return
+    }
     setFile(file);
     setFilename(file.name);
     const fileSrc = window.URL.createObjectURL(file);

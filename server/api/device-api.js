@@ -16,7 +16,8 @@ Router.use(fileUpload());
 
 Router.get("/getDevices", (req, res) => {
   Device.find()
-    .then(data => {
+  .exec()
+  .then(data => {
       data = data.map(val => {
         obj = {};
         obj._id = val._id;
@@ -25,16 +26,15 @@ Router.get("/getDevices", (req, res) => {
         obj.buffer = fs.readFileSync(
           path.resolve(__dirname, `../devices_images/${val.source}`)
         );
-
         return obj;
       });
 
-      //console.log(data);
+      
       res.send(data);
     })
-    .catch(e => {
+  .catch(e => {
       res.status(400).json({ msg: e });
-    });
+  });
 });
 
 Router.post("/addKey", (req, res) => {
@@ -120,9 +120,14 @@ Router.post("/addDevice", (req, res) => {
       }
     });
     //Create Device
+    newKeywords = [];
+    newKeywords.push(req.body.keywords)
+    if (!newKeywords.includes(req.body.name)){
+      newKeywords.push(req.body.name)
+    }
     const newDevice = new Device({
       name: req.body.name,
-      keywords: req.body.keywords,
+      keywords: newKeywords,
       source: file.name //?
     });
 
