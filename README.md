@@ -4,4 +4,4 @@
 ## Notes:
 For our authentication a config variable must be added as secretOrKey in the server/config file. 
 This key can be generated using:
-'node -e "console.log(require('crypto').randomBytes(32).toString('hex'));'
+'node -e "console.log(require('crypto').randomBytes(32).toString('hex'));'# Doctors_Coder
