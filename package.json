@@ -39,7 +39,7 @@
     "eslint-plugin-react-hooks": "^1.6.1",
     "express": "^4.17.1",
     "express-fileupload": "^1.1.6",
-    "express-handlebars": "^4.0.1",
+    "express-handlebars": "^5.3.1",
     "file-loader": "4.3.0",
     "formik": "^2.1.4",
     "fs-extra": "^8.1.0",
